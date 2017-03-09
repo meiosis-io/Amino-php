@@ -1,7 +1,8 @@
 <?php
 namespace Meiosis;
 
-use Meiosis\Requests\Customer;
+use Meiosis\Constants\Api;
+use Meiosis\Exceptions\InvalidEndpointException;
 
 class Amino
 {
@@ -18,6 +19,8 @@ class Amino
      */
     private $teamID;
 
+    private $api_url;
+
     /**
      * Setup
      * @param int $apikey
@@ -28,10 +31,30 @@ class Amino
     {
         $this->apikey = $apikey;
         $this->teamID = $teamID;
+
+        $this->api_url = Api::API_BASEPATH;
     }
 
-    public function customer()
+    /**
+     * Override the default endpoint URL for testing
+     * @param string $url
+     * @return self
+     */
+    public function setCustomBaseUrl($url)
     {
-        return new Customer();
+        $this->api_url = $url;
+        return $this;
+    }
+
+    public function endpoint($type)
+    {
+        $type = ucfirst($type);
+        $class = "\Meiosis\Endpoints\{$type}";
+
+        if (! class_exists($class)) {
+            throw new InvalidEndpointException("Could not find the {$type} endpoint class");
+        }
+
+        return new $class;
     }
 }
