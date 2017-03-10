@@ -36,7 +36,7 @@ class Customer extends CRMObject
 
     public function track($source, $description)
     {
-        if ($this->data['id']) {
+        if (! $this->exists()) {
             throw new Exception('Need to get a customer first');
         }
 
