@@ -36,15 +36,18 @@ abstract class CRMObject
         $client = new Client(['base_uri' => $this->config['api_url'] . $this->getEndpoint()]);
         $url = $subPath;
 
-        $result = $client->request(
-            'GET',
-            $url,
-            ['query' => $this->payload($data)]
-        );
-
-        if ($result->getStatusCode() == '404') {
-            return null;
+        try {
+            $result = $client->request(
+                'GET',
+                $url,
+                ['query' => $this->payload($data)]
+            );
+        } catch (ClientException $e) {
+            if ($e->getStatusCode() == '404') {
+                return null;
+            }
         }
+
         return $result->getBody()->getContents();
     }
 
