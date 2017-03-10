@@ -55,6 +55,6 @@ class Amino
     public function createCustomer($fields)
     {
         $customer = new Customer($this->apikey, $this->teamID, $this->api_url);
-        return $customer->create($data);
+        return $customer->create($fields);
     }
 }
