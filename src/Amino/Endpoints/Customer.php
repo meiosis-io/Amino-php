@@ -54,7 +54,7 @@ class Customer extends CRMObject
             [
                 'form_params' => $this->payload([
                     'source' => $source,
-                    'customer' => $this->data['id'],
+                    'customer' => $this->id,
                     'description' => $description,
                 ])
             ]
