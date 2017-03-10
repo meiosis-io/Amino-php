@@ -8,7 +8,7 @@ use GuzzleHttp\Exception\ClientException;
 abstract class CRMObject
 {
     protected $config = [];
-    protected $data = (object) [];
+    protected $data;
 
     public function __construct($apikey, $teamID, $api_url)
     {
@@ -17,6 +17,8 @@ abstract class CRMObject
             'team'      => urlencode($teamID),
             'api_url'   => $api_url
         ];
+
+        $this->data = (object) [];
     }
 
     public function exists()
