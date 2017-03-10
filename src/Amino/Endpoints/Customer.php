@@ -3,8 +3,7 @@ namespace Meiosis\Endpoints;
 
 use Meiosis\CRMObject;
 use Meiosis\Constants\Api;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
+use Meiosis\Exceptions\ObjectNotPopulatedException;
 
 class Customer extends CRMObject
 {
@@ -12,15 +11,15 @@ class Customer extends CRMObject
 
     // Set constant Fields
     private $staticFields = [
-        'id' => 'string',
-        'first' => 'string',
-        'middle' => 'string',
-        'last' => 'string',
-        'email' => 'string',
-        'organization' => 'string',
-        'created' => 'string',
-        'updated' => 'string',
-        'user_id' => 'string',
+        'id'            => 'string',
+        'first'         => 'string',
+        'middle'        => 'string',
+        'last'          => 'string',
+        'email'         => 'string',
+        'organization'  => 'string',
+        'created'       => 'string',
+        'updated'       => 'string',
+        'user_id'       => 'string',
     ];
 
     /**
@@ -35,31 +34,16 @@ class Customer extends CRMObject
     public function track($source, $description)
     {
         if (! $this->exists()) {
-            throw new Exception('Need to get a customer first');
+            throw new ObjectNotPopulatedException('Need to get a customer first');
         }
 
-        $client = new Client([
-            'base_uri' => $this->config['api_url'] . 'track/',
-            'http_errors' => false
+        $payload = $this->payload([
+            'source'   => $source,
+            'customer' => $this->id,
+            'desciption' => $description
         ]);
 
-        $result = $client->request(
-            'POST',
-            '',
-            [
-                'form_params' => $this->payload([
-                    'source' => $source,
-                    'customer' => $this->id,
-                    'description' => $description,
-                ])
-            ]
-        );
-
-        if ($result->getStatusCode() != 200) {
-            throw new \Exception('Cant post');
-        }
-
-        return json_decode($result->getBody());
+        return $this->apiClient->post('', $payload);
     }
 
     public function find($identifier)
@@ -79,30 +63,20 @@ class Customer extends CRMObject
     public function create($data)
     {
         $safeData = $this->reconcilePayload($data);
-        $this->post('', $safeData);
+        $created = $this->apiClient->post($this->endpoint, $safeData);
 
-        return $this;
+        return $this->find($created->id);
     }
 
     public function delete($identifier)
     {
-
+        // TODO: Implement
     }
 
     private function getAttributes()
     {
-        $client = new Client([
-            'base_uri' => $this->config['api_url'] . 'attributes/customer/',
-            'http_errors' => false
-        ]);
 
-        $result = $client->request(
-            'GET',
-            '',
-            ['query' => $this->payload([])]
-        );
-
-        return json_decode($result->getBody());
+        return $this->apiClient->get('attributes/customer/', $this->payload());
     }
 
     private function reconcilePayload($data)
