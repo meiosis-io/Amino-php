@@ -68,6 +68,14 @@ class Customer extends CRMObject
         return $this->find($created->id);
     }
 
+    public function saveChanges()
+    {
+        $safeData = $this->reconcilePayload($this->data);
+        $this->apiClient->post($this->endpoint . $this->id, $safeData);
+
+        return $this;
+    }
+
     public function delete($identifier)
     {
         // TODO: Implement

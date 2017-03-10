@@ -28,6 +28,8 @@ abstract class CRMObject
 
     abstract public function create($data);
 
+    abstract public function saveChanges();
+
     abstract public function delete($identifier);
 
     public function exists()
