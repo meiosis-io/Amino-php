@@ -76,8 +76,45 @@ class Customer extends CRMObject
 
     public function create($data)
     {
-        $this->post('', $data);
+        $safeData = $this->reconcilePayload($data);
+        $this->post('', $safeData);
 
         return $this;
+    }
+
+    private function getAttributes()
+    {
+        $client = new Client([
+            'base_uri' => $this->config['api_url'] . 'attributes/customer/',
+            'http_errors' => false
+        ]);
+
+        $result = $client->request(
+            'GET',
+            '',
+            ['query' => $this->payload([])]
+        );
+
+        return json_decode($result->getBody());
+    }
+
+    private function reconcilePayload($data)
+    {
+        $valid = [];
+        $return = [];
+        foreach ($this->getAttributes() as $attribute) {
+            $valid[] = $attribute->key;
+        }
+
+        foreach ($data as $key => $supplied) {
+            if (in_array($key, $this->staticFields)) {
+                $return[$key] = $supplied;
+            }
+            if (in_array($key, $valid)) {
+                $return[$key] = $supplied;
+            }
+        }
+
+        return $return;
     }
 }

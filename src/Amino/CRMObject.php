@@ -70,7 +70,7 @@ abstract class CRMObject
         return $this;
     }
 
-    protected function payload($data)
+    public function payload($data)
     {
         return array_merge([
             'api_token' => $this->config['api_token'],
