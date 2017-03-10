@@ -8,6 +8,8 @@ use GuzzleHttp\Exception\ClientException;
 
 class Customer extends CRMObject
 {
+    private $endpoint = 'customers/';
+
     // Set constant Fields
     private $staticFields = [
         'id' => 'string',
@@ -21,18 +23,11 @@ class Customer extends CRMObject
         'user_id' => 'string',
     ];
 
-    public function availableFields()
-    {
-
-    }
-
-    public function getEndpoint()
-    {
-        return 'customers/';
-    }
-
-    // Return the valid object params
-    private function toData()
+    /**
+     * Extract the private data
+     * @return type
+     */
+    private function extract()
     {
         return $this->data;
     }
@@ -69,7 +64,14 @@ class Customer extends CRMObject
 
     public function find($identifier)
     {
-        $this->get($identifier, []);
+        try {
+            $this->apiClient->get(
+                $this->endpoint . $identifier,
+                $this->payload()
+            );
+        } catch (ObjectNotFoundException $e) {
+            // The object wasn't found, so don't do anything with it.
+        }
 
         return $this;
     }

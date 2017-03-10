@@ -1,25 +1,34 @@
 <?php
 namespace Meiosis;
 
-use GuzzleHttp\Client;
 use Meiosis\Constants\Api;
-use GuzzleHttp\Exception\ClientException;
+use Meiosis\ApiClient\ApiClient;
 
 abstract class CRMObject
 {
-    protected $config = [];
+    protected $token;
+    protected $teamID;
     protected $data;
+    protected $apiClient;
+
+    // Instantiate the object with the API credentials, and build the client
 
     public function __construct($apikey, $teamID, $api_url)
     {
-        $this->config = [
-            'api_token' => urlencode($apikey),
-            'team'      => urlencode($teamID),
-            'api_url'   => $api_url
-        ];
+        $this->token  = urlencode($apikey);
+        $this->teamID = urlencode($teamID);
 
         $this->data = (object) [];
+
+        $this->apiClient = new ApiClient($api_url);
+
     }
+
+    abstract public function find($identifier);
+
+    abstract public function create($data);
+
+    abstract public function delete($identifier);
 
     public function exists()
     {
@@ -27,56 +36,11 @@ abstract class CRMObject
         return ($this->id) ? true : false;
     }
 
-    public function post($subPath = '', $data)
-    {
-        $client = new Client([
-            'base_uri' => $this->config['api_url'] . $this->getEndpoint(),
-            'http_errors' => false
-        ]);
-
-        $url = $subPath;
-
-        $result = $client->request(
-            'POST',
-            $url,
-            ['form_params' => $this->payload($data)]
-        );
-
-        if ($result->getStatusCode() != 200) {
-            throw new \Exception('Cant post');
-        }
-
-        $this->data = json_decode($result->getBody());
-        return $this;
-    }
-
-    public function get($subPath = '', $data = [])
-    {
-        $client = new Client([
-            'base_uri' => $this->config['api_url'] . $this->getEndpoint(),
-            'http_errors' => false
-        ]);
-        $url = $subPath;
-
-        $result = $client->request(
-            'GET',
-            $url,
-            ['query' => $this->payload($data)]
-        );
-        if ($result->getStatusCode() == '404') {
-            return null;
-        }
-
-        $this->data = json_decode($result->getBody());
-
-        return $this;
-    }
-
-    public function payload($data)
+    public function payload($data = [])
     {
         return array_merge([
-            'api_token' => $this->config['api_token'],
-            'team'      => $this->config['team']
+            'api_token' => $this->token,
+            'team'      => $this->teamID
         ], $data);
     }
 
