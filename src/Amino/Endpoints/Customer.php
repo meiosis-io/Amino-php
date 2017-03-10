@@ -69,12 +69,12 @@ class Customer extends CRMObject
     public function find($identifier)
     {
         $this->get($identifier, []);
-        return $this->data();
+        return $this->toData();
     }
 
     public function create($data)
     {
         $this->post('', $data);
-        return $this->data();
+        return $this->toData();
     }
 }
