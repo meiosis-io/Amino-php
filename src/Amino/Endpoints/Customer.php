@@ -2,6 +2,9 @@
 namespace Meiosis\Endpoints;
 
 use Meiosis\CRMObject;
+use Meiosis\Constants\Api;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 
 class Customer extends CRMObject
 {
