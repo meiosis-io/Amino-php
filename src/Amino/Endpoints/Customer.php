@@ -65,7 +65,7 @@ class Customer extends CRMObject
     public function find($identifier)
     {
         try {
-            $this->apiClient->get(
+            $this->data = $this->apiClient->get(
                 $this->endpoint . $identifier,
                 $this->payload()
             );
