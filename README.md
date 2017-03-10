@@ -1,11 +1,9 @@
 # Meiosis API Wrapper
 
+## Doc Coming soon...
 ```php
 
 $amino = new Meiosis\Amino($token, $team);
 
-$customer = $amino->endpoint('Customer');
-
-// Fetch available Fields
-$fields = $customer->fields();
+$customer = $amino->customer($identifier);
 ```
