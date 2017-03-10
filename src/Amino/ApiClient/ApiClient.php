@@ -25,7 +25,7 @@ class ApiClient
 
     public function get($endpoint, $queryParams)
     {
-        $result = $client->request('GET', $endpoint, ['query' => $queryParams]);
+        $result = $this->client->request('GET', $endpoint, ['query' => $queryParams]);
 
         return $this->checkAndReturnResponse($result);
     }
