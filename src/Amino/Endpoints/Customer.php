@@ -48,11 +48,9 @@ class Customer extends CRMObject
             'http_errors' => false
         ]);
 
-        $url = $subPath;
-
         $result = $client->request(
             'POST',
-            $url,
+            '',
             [
                 'form_params' => $this->payload([
                     'source' => $source,
