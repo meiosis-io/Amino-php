@@ -84,6 +84,11 @@ class Customer extends CRMObject
         return $this;
     }
 
+    public function delete($identifier)
+    {
+
+    }
+
     private function getAttributes()
     {
         $client = new Client([
