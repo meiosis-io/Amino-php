@@ -19,6 +19,12 @@ abstract class CRMObject
         ];
     }
 
+    public function exists()
+    {
+        // Return true or false based on populated...
+        return isset($this->data['id']);
+    }
+
     public function post($subPath = '', $data)
     {
         $client = new Client([
