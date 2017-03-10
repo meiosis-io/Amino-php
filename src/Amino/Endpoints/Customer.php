@@ -43,6 +43,6 @@ class Customer extends CRMObject
     public function create($data)
     {
         $response = $this->post('', $data);
-        return $this->parse($response);
+        return $this->find($response->id);
     }
 }
