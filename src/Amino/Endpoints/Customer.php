@@ -107,7 +107,7 @@ class Customer extends CRMObject
         }
 
         foreach ($data as $key => $supplied) {
-            if (in_array($key, $this->staticFields)) {
+            if (array_key_exists($key, $this->staticFields)) {
                 $return[$key] = $supplied;
             }
             if (in_array($key, $valid)) {
