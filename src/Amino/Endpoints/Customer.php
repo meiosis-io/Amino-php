@@ -28,8 +28,21 @@ class Customer extends CRMObject
         return 'customers/';
     }
 
+    // Return the valid object params
+    private function parse($object)
+    {
+        return $object;
+    }
+
     public function find($identifier)
     {
-        $this->get($identifier, []);
+        $response = $this->get($identifier, []);
+        return $this->parse($response);
+    }
+
+    public function create($data)
+    {
+        $response = $this->post('', $data);
+        return $this->parse($response);
     }
 }

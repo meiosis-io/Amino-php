@@ -21,18 +21,27 @@ abstract class CRMObject
 
     public function post($data)
     {
-        $client = new Client();
-        $result = $client->request('POST', Api::API_BASEPATH . $this->getEndpoint(), $data);
-        echo $res->getStatusCode();
-        // "200"
-        echo $res->getHeader('content-type');
-        // 'application/json; charset=utf8'
-        echo $res->getBody();
+        $client = new Client([
+            'base_uri' => $this->config['api_url'] . $this->getEndpoint(),
+            'http_errors' => false
+        ]);
+        $url = $subPath;
+
+        $result = $client->request(
+            'POST',
+            $url,
+            ['form_params' => $this->payload($data)]
+        );
+
+        if ($result->getStatusCode() == '404') {
+            return null;
+        }
+
+        return json_decode($result->getBody());
     }
 
     public function get($subPath = '', $data = [])
     {
-        // dd($this->config['api_url'] . $this->getEndpoint());
         $client = new Client([
             'base_uri' => $this->config['api_url'] . $this->getEndpoint(),
             'http_errors' => false
@@ -44,12 +53,11 @@ abstract class CRMObject
             $url,
             ['query' => $this->payload($data)]
         );
-
         if ($result->getStatusCode() == '404') {
             return null;
         }
 
-        return $result->getBody()->getContents();
+        return json_decode($result->getBody());
     }
 
     protected function payload($data)
