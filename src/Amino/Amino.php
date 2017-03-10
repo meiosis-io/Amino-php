@@ -2,6 +2,7 @@
 namespace Meiosis;
 
 use Meiosis\Constants\Api;
+use Meiosis\Endpoints\Customer;
 use Meiosis\Exceptions\InvalidEndpointException;
 
 class Amino
@@ -31,7 +32,6 @@ class Amino
     {
         $this->apikey = $apikey;
         $this->teamID = $teamID;
-
         $this->api_url = Api::API_BASEPATH;
     }
 
@@ -46,15 +46,15 @@ class Amino
         return $this;
     }
 
-    public function endpoint($type)
+    public function customer($identifier)
     {
-        $type = ucfirst($type);
-        $class = "\Meiosis\Endpoints\{$type}";
+        $customer = new Customer($this->apikey, $this->teamID, $this->api_url);
+        return $customer->find($identifier);
+    }
 
-        if (! class_exists($class)) {
-            throw new InvalidEndpointException("Could not find the {$type} endpoint class");
-        }
-
-        return new $class;
+    public function createCustomer($fields)
+    {
+        $customer = new Customer($this->apikey, $this->teamID, $this->api_url);
+        return $customer->create($data);
     }
 }

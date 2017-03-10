@@ -18,13 +18,18 @@ class Customer extends CRMObject
         'user_id' => 'string',
     ];
 
-    protected function getEndpoint()
-    {
-        return "customer";
-    }
-
     public function availableFields()
     {
 
+    }
+
+    public function getEndpoint()
+    {
+        return 'customers/';
+    }
+
+    public function find($identifier)
+    {
+        $this->get($identifier, []);
     }
 }
