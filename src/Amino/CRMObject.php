@@ -38,7 +38,8 @@ abstract class CRMObject
             throw new \Exception('Cant post');
         }
 
-        return json_decode($result->getBody());
+        $this->data = json_decode($result->getBody());
+        return $this;
     }
 
     public function get($subPath = '', $data = [])
@@ -58,7 +59,9 @@ abstract class CRMObject
             return null;
         }
 
-        return json_decode($result->getBody());
+        $this->data = json_decode($result->getBody());
+
+        return $this;
     }
 
     protected function payload($data)

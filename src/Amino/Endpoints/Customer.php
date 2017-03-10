@@ -29,20 +29,52 @@ class Customer extends CRMObject
     }
 
     // Return the valid object params
-    private function parse($object)
+    private function toData()
     {
-        return $object;
+        return $this->data;
+    }
+
+    public function track($source, $description)
+    {
+        if ($this->data['id']) {
+            throw new Exception('Need to get a customer first');
+        }
+
+        $client = new Client([
+            'base_uri' => $this->config['api_url'] . 'track/',
+            'http_errors' => false
+        ]);
+
+        $url = $subPath;
+
+        $result = $client->request(
+            'POST',
+            $url,
+            [
+                'form_params' => $this->payload([
+                    'source' => $source,
+                    'customer' => $this->data['id'],
+                    'description' => $description,
+                ])
+            ]
+        );
+
+        if ($result->getStatusCode() != 200) {
+            throw new \Exception('Cant post');
+        }
+
+        return json_decode($result->getBody());
     }
 
     public function find($identifier)
     {
-        $response = $this->get($identifier, []);
-        return $this->parse($response);
+        $this->get($identifier, []);
+        return $this->data();
     }
 
     public function create($data)
     {
-        $response = $this->post('', $data);
-        return $this->find($response->id);
+        $this->post('', $data);
+        return $this->data();
     }
 }
