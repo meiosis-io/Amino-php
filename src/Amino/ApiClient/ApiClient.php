@@ -18,7 +18,7 @@ class ApiClient
     public function __construct($url)
     {
         $this->client = new Client([
-            'base_uri' => $this->config['api_url'],
+            'base_uri' => $url,
             'http_errors' => false
         ]);
     }
