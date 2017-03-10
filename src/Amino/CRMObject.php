@@ -3,6 +3,7 @@ namespace Meiosis;
 
 use GuzzleHttp\Client;
 use Meiosis\Constants\Api;
+use GuzzleHttp\Exception\ClientException;
 
 abstract class CRMObject
 {
@@ -29,25 +30,29 @@ abstract class CRMObject
         echo $res->getBody();
     }
 
-    public function get($data = [], $subPath = '')
+    public function get($subPath = '', $data = [])
     {
-        $client = new Client();
-        $url = $this->config['api_url'] . $this->getEndpoint() . $subPath;
+        // dd($this->config['api_url'] . $this->getEndpoint());
+        $client = new Client(['base_uri' => $this->config['api_url'] . $this->getEndpoint()]);
+        $url = $subPath;
 
         $result = $client->request(
             'GET',
             $url,
-            $this->payload($data)
+            ['query' => $this->payload($data)]
         );
 
-        dd($result);
+        if ($result->getStatusCode() == '404') {
+            return null;
+        }
+        return $result->getBody()->getContents();
     }
 
     protected function payload($data)
     {
         return array_merge([
-            'api_token' => $this->config['apikey'],
-            'team'      => $this->config['teamID']
+            'api_token' => $this->config['api_token'],
+            'team'      => $this->config['team']
         ], $data);
     }
 
