@@ -33,19 +33,20 @@ abstract class CRMObject
     public function get($subPath = '', $data = [])
     {
         // dd($this->config['api_url'] . $this->getEndpoint());
-        $client = new Client(['base_uri' => $this->config['api_url'] . $this->getEndpoint()]);
+        $client = new Client([
+            'base_uri' => $this->config['api_url'] . $this->getEndpoint(),
+            'http_errors' => false
+        ]);
         $url = $subPath;
 
-        try {
-            $result = $client->request(
-                'GET',
-                $url,
-                ['query' => $this->payload($data)]
-            );
-        } catch (ClientException $e) {
-            if ($e->getStatusCode() == '404') {
-                return null;
-            }
+        $result = $client->request(
+            'GET',
+            $url,
+            ['query' => $this->payload($data)]
+        );
+
+        if ($result->getStatusCode() == '404') {
+            return null;
         }
 
         return $result->getBody()->getContents();
