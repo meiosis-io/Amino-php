@@ -51,7 +51,7 @@ class ApiClient
         }
 
         if ($status == 422) {
-            throw new ObjectValidationFailedException(json_decode($response->getBody()));
+            throw new ObjectValidationFailedException($response->getBody());
         }
 
         if ($status != 200) {

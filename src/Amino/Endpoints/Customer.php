@@ -40,7 +40,7 @@ class Customer extends CRMObject
         $payload = $this->payload([
             'source'   => $source,
             'customer' => $this->id,
-            'desciption' => $description
+            'description' => $description
         ]);
 
         return $this->apiClient->post('track/', $payload);
