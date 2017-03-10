@@ -19,12 +19,13 @@ abstract class CRMObject
         ];
     }
 
-    public function post($data)
+    public function post($subPath = '', $data)
     {
         $client = new Client([
             'base_uri' => $this->config['api_url'] . $this->getEndpoint(),
             'http_errors' => false
         ]);
+
         $url = $subPath;
 
         $result = $client->request(
@@ -33,8 +34,8 @@ abstract class CRMObject
             ['form_params' => $this->payload($data)]
         );
 
-        if ($result->getStatusCode() == '404') {
-            return null;
+        if ($result->getStatusCode() != 200) {
+            throw new \Exception('Cant post');
         }
 
         return json_decode($result->getBody());
