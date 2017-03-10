@@ -43,7 +43,7 @@ class Customer extends CRMObject
             'desciption' => $description
         ]);
 
-        return $this->apiClient->post('', $payload);
+        return $this->apiClient->post('track/', $payload);
     }
 
     public function find($identifier)
