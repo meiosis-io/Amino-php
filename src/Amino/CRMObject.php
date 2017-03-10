@@ -85,7 +85,7 @@ abstract class CRMObject
 
     public function __get($name)
     {
-        if (property_exists($name, $this->data)) {
+        if (property_exists($this->data, $name)) {
             return $this->data->{$name};
         }
 
