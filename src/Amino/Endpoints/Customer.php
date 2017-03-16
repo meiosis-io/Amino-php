@@ -4,6 +4,7 @@ namespace Meiosis\Endpoints;
 use Meiosis\CRMObject;
 use Meiosis\Constants\Api;
 use Meiosis\Exceptions\ObjectNotPopulatedException;
+use Meiosis\Exceptions\ObjectNotFoundException;
 
 class Customer extends CRMObject
 {
