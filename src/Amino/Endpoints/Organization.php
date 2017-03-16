@@ -67,8 +67,16 @@ class Organization extends CRMObject
 
     public function search($data)
     {
-        $safeData = $this->reconcilePayload($data);
-        return $this->apiClient->get('attributes/organization/', $safeData);
+        try {
+            $this->data = $this->apiClient->get(
+                $this->endpoint,
+                $this->reconcilePayload($data)
+            );
+        } catch (ObjectNotFoundException $e) {
+            // The object wasn't found, so don't do anything with it.
+        }
+
+        return $this;
     }
 
     private function getAttributes()
