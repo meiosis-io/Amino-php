@@ -4,6 +4,7 @@ namespace Meiosis\Endpoints;
 use Meiosis\CRMObject;
 use Meiosis\Constants\Api;
 use Meiosis\Exceptions\ObjectNotPopulatedException;
+use Meiosis\Exceptions\ObjectNotFoundException;
 
 class Organization extends CRMObject
 {
@@ -68,10 +69,16 @@ class Organization extends CRMObject
     public function search($data)
     {
         try {
-            $this->data = $this->apiClient->get(
+            $result = $this->apiClient->get(
                 $this->endpoint,
-                $this->reconcilePayload($data)
+                $this->payload($data)
             );
+
+            if (! $result) {
+                throw new ObjectNotFoundException('Nothing Found');
+            }
+
+            $this->data = $result[0];
         } catch (ObjectNotFoundException $e) {
             // The object wasn't found, so don't do anything with it.
         }
