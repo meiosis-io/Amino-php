@@ -48,7 +48,7 @@ class Organization extends CRMObject
     public function create($data)
     {
         $safeData = $this->reconcilePayload($data);
-        $created = $this->apiClient->post($this->endpoint, $safeData);
+        $created = $this->apiClient->post($this->endpoint, $this->payload($safeData));
 
         return $this->find($created->id);
     }
