@@ -3,6 +3,7 @@ namespace Meiosis;
 
 use Meiosis\Constants\Api;
 use Meiosis\Endpoints\Customer;
+use Meiosis\Endpoints\Organization;
 use Meiosis\Exceptions\InvalidEndpointException;
 
 class Amino
@@ -56,5 +57,17 @@ class Amino
     {
         $customer = new Customer($this->apikey, $this->teamID, $this->api_url);
         return $customer->create($fields);
+    }
+
+    public function organization($identifier)
+    {
+        $organization = new Organization($this->apikey, $this->teamID, $this->api_url);
+        return $organization->find($identifier);
+    }
+
+    public function createOrganization($fields)
+    {
+        $organization = new Organization($this->apikey, $this->teamID, $this->api_url);
+        return $organization->create($fields);
     }
 }
