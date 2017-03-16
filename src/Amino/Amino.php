@@ -65,6 +65,12 @@ class Amino
         return $organization->find($identifier);
     }
 
+    public function searchOrganizations($data)
+    {
+        $organization = new Organization($this->apikey, $this->teamID, $this->api_url);
+        return $organization->search($data);
+    }
+
     public function createOrganization($fields)
     {
         $organization = new Organization($this->apikey, $this->teamID, $this->api_url);
