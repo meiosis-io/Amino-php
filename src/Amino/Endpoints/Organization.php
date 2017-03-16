@@ -65,6 +65,12 @@ class Organization extends CRMObject
         // TODO: Implement
     }
 
+    public function search($data)
+    {
+        $safeData = $this->reconcilePayload($data);
+        return $this->apiClient->get('attributes/organization/', $safeData);
+    }
+
     private function getAttributes()
     {
 
