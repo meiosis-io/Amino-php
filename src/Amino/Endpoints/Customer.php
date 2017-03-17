@@ -72,7 +72,7 @@ class Customer extends CRMObject
     public function saveChanges()
     {
         $safeData = $this->reconcilePayload($this->data);
-        $this->apiClient->post($this->endpoint . $this->id, $safeData);
+        $this->apiClient->post($this->endpoint . $this->id, $this->payload($safeData));
 
         return $this;
     }
