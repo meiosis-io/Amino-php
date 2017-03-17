@@ -17,7 +17,7 @@ class Customer extends CRMObject
         'middle'        => 'string',
         'last'          => 'string',
         'email'         => 'string',
-        'organization'  => 'string',
+        'organization_id'  => 'string',
         'created'       => 'string',
         'updated'       => 'string',
         'user_id'       => 'string',
