@@ -48,7 +48,7 @@ abstract class CRMObject
 
     public function __set($name, $value)
     {
-        $this->data[$name] = $value;
+        $this->data->{$name} = $value;
     }
 
     public function __get($name)
