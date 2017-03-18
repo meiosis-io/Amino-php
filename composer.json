@@ -18,8 +18,8 @@
         "guzzlehttp/guzzle" : "^6.2"
     },
     "autoload": {
-        "psr-0": {
-            "Meiosis": "src"
+        "psr-4": {
+            "Meiosis\\": "src/"
         }
     }
 }
