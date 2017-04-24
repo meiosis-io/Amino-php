@@ -32,7 +32,7 @@ class Customer extends CRMObject
         return $this->data;
     }
 
-    public function track($source, $description)
+    public function track($source, $description, $priority = 5)
     {
         if (! $this->exists()) {
             throw new ObjectNotPopulatedException('Need to get a customer first');
@@ -41,7 +41,8 @@ class Customer extends CRMObject
         $payload = $this->payload([
             'source'   => $source,
             'customer' => $this->id,
-            'description' => $description
+            'description' => $description,
+            'priority' => $priority
         ]);
 
         return $this->apiClient->post('track/', $payload);
