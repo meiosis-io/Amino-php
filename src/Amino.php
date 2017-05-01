@@ -4,6 +4,7 @@ namespace Meiosis;
 use Meiosis\Constants\Api;
 use Meiosis\Endpoints\Customer;
 use Meiosis\Endpoints\Organization;
+use Meiosis\Endpoints\Transaction;
 use Meiosis\Exceptions\InvalidEndpointException;
 use Meiosis\Exceptions\ObjectNotPopulatedException;
 
