@@ -5,6 +5,7 @@ use Meiosis\Constants\Api;
 use Meiosis\Endpoints\Customer;
 use Meiosis\Endpoints\Organization;
 use Meiosis\Exceptions\InvalidEndpointException;
+use Meiosis\Exceptions\ObjectNotPopulatedException;
 
 class Amino
 {
@@ -75,5 +76,26 @@ class Amino
     {
         $organization = new Organization($this->apikey, $this->teamID, $this->api_url);
         return $organization->create($fields);
+    }
+
+    public function recordTransaction(Customer $customer, array $transactionData)
+    {
+        $transaction = new Transaction($this->apikey, $this->teamID, $this->api_url);
+        if (! $customer->exists()) {
+            throw new ObjectNotPopulatedException;
+        }
+
+        $data = [
+            'customer' => $customer,
+            'details'  => $transactionData
+        ];
+
+        return $transaction->create($data);
+    }
+
+    public function transaction($transactionId)
+    {
+        $transaction = new Transaction($this->apikey, $this->teamID, $this->api_url);
+        return $transaction->find($transactionId);
     }
 }
