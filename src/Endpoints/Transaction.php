@@ -41,11 +41,11 @@ class Transaction extends CRMObject
     {
         $payloadData['customer'] = $data['customer']->id;
 
-        if ($data['total']) {
+        if (array_key_exists('total', $data)) {
             $payloadData['total'] = $data['total'];
         }
 
-        if ($data['items']) {
+        if (array_key_exists('items', $data)) {
             $payloadData['items'] = $data['items'];
         }
 
