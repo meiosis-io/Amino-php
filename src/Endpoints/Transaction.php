@@ -49,6 +49,18 @@ class Transaction extends CRMObject
             $payloadData['items'] = $data['details']['items'];
         }
 
+        if (array_key_exists('discount_type', $data['details'])) {
+            $payloadData['discount_type'] = $data['details']['discount_type'];
+        }
+
+        if (array_key_exists('discount', $data['details'])) {
+            $payloadData['discount'] = $data['details']['discount'];
+        }
+
+        if (array_key_exists('tax', $data['details'])) {
+            $payloadData['tax'] = $data['details']['tax'];
+        }
+
         $created = $this->apiClient
             ->post($this->endpoint, $this->payload($payloadData));
 
@@ -63,25 +75,5 @@ class Transaction extends CRMObject
     public function delete($identifier)
     {
         // TODO: Implement
-    }
-
-    private function reconcilePayload($data)
-    {
-        $valid = [];
-        $return = [];
-        foreach ($this->getAttributes() as $attribute) {
-            $valid[] = $attribute->key;
-        }
-
-        foreach ($data as $key => $supplied) {
-            if (array_key_exists($key, $this->staticFields)) {
-                $return[$key] = $supplied;
-            }
-            if (in_array($key, $valid)) {
-                $return[$key] = $supplied;
-            }
-        }
-
-        return $return;
     }
 }
