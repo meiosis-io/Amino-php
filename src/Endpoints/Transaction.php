@@ -41,12 +41,12 @@ class Transaction extends CRMObject
     {
         $payloadData['customer'] = $data['customer']->id;
 
-        if (array_key_exists('total', $data)) {
-            $payloadData['total'] = $data['total'];
+        if (array_key_exists('total', $data['details'])) {
+            $payloadData['total'] = $data['details']['total'];
         }
 
-        if (array_key_exists('items', $data)) {
-            $payloadData['items'] = $data['items'];
+        if (array_key_exists('items', $data['details'])) {
+            $payloadData['items'] = $data['details']['items'];
         }
 
         $created = $this->apiClient
