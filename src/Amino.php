@@ -103,7 +103,7 @@ class Amino
 
     public function pages($siteToken)
     {
-        $page = new CMSPage($this->apiKey, $this->teamID, $this->api_url);
+        $page = new CMSPage($this->apikey, $this->teamID, $this->api_url);
         $page->setSiteToken($siteToken);
         return $page;
     }

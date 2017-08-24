@@ -8,21 +8,41 @@ use Meiosis\Exceptions\ObjectNotFoundException;
 
 class CMSPage extends CRMObject
 {
-    private $endpoint = 'cms/';
+    private $endpoint = 'cms/site/';
     private $siteToken = '';
-    private $data = null;
+    protected $data = null;
+
+    public function find($identifier)
+    {
+        return $this->byId($identifier);
+    }
+
+    public function create($data)
+    {
+
+    }
+
+    public function saveChanges()
+    {
+
+    }
+
+    public function delete($identifier)
+    {
+
+    }
 
     public function byId($pageID)
     {
+
         try {
             $this->data = $this->apiClient->get(
-                "{$this->endpoint}/{$this->siteToken}/page/{$pageID}",
+                $this->endpoint . $this->siteToken . '/page/' . $pageID,
                 $this->payload()
             );
         } catch (ObjectNotFoundException $e) {
-            // Nothing found.
+            throw new \Exception($e);
         }
-
         return $this;
     }
 
@@ -30,14 +50,14 @@ class CMSPage extends CRMObject
      * Extract the private data
      * @return type
      */
-    private function extract()
+    public function extract()
     {
         return $this->data;
     }
 
     public function setSiteToken($token)
     {
-        $this->siteToken = $siteToken;
+        $this->siteToken = $token;
         return $this;
     }
 }
