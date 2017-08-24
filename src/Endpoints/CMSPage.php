@@ -9,14 +9,14 @@ use Meiosis\Exceptions\ObjectNotFoundException;
 class CMSPage extends CRMObject
 {
     private $endpoint = 'cms/';
-    private $token = '';
+    private $siteToken = '';
     private $data = null;
 
     public function byId($pageID)
     {
         try {
             $this->data = $this->apiClient->get(
-                "{$this->endpoint}/{$this->token}/page/{$pageID}",
+                "{$this->endpoint}/{$this->siteToken}/page/{$pageID}",
                 $this->payload()
             );
         } catch (ObjectNotFoundException $e) {
@@ -37,7 +37,7 @@ class CMSPage extends CRMObject
 
     public function setSiteToken($token)
     {
-        $this->token = $token;
-        return $token;
+        $this->siteToken = $siteToken;
+        return $this;
     }
 }
