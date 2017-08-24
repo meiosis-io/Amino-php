@@ -2,6 +2,7 @@
 namespace Meiosis;
 
 use Meiosis\Constants\Api;
+use Meiosis\Endpoints\CMSPage;
 use Meiosis\Endpoints\Customer;
 use Meiosis\Endpoints\Organization;
 use Meiosis\Endpoints\Transaction;
@@ -98,5 +99,12 @@ class Amino
     {
         $transaction = new Transaction($this->apikey, $this->teamID, $this->api_url);
         return $transaction->find($transactionId);
+    }
+
+    public function pages($siteToken)
+    {
+        $page = new CMSPage($this->apiKey, $this->teamID, $this->api_url);
+        $page->setSiteToken($siteToken);
+        return $page;
     }
 }

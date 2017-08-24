@@ -50,4 +50,15 @@ $transactionData = [
 ];
 
 $amino->recordTransaction($customer, $transactionData);
+
+
+// Get a CMS Page
+$amino
+    ->pages($siteToken)
+    ->byId($pageId);
+
+// Get a page by slug (Slower than id)
+$amino
+    ->pages($siteToken)
+    ->bySlug($slug);
 ```
