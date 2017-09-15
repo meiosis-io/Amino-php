@@ -46,6 +46,22 @@ class CMSPage extends CRMObject
         return $this;
     }
 
+    public function bySlug($slug)
+    {
+
+        try {
+            $this->data = $this->apiClient->get(
+                $this->endpoint . $this->siteToken . '/page/',
+                $this->payload([
+                    'slug' => $slug
+                ])
+            );
+        } catch (ObjectNotFoundException $e) {
+            throw new \Exception($e);
+        }
+        return $this;
+    }
+
      /**
      * Extract the private data
      * @return type
