@@ -62,6 +62,22 @@ class CMSPage extends CRMObject
         return $this;
     }
 
+    /**
+     * Search By Attribute
+     */
+    public function byAttributes($attributes)
+    {
+        try {
+            $this->data = $this->apiClient->get(
+                $this->endpoint . $this->siteToken . '/page/',
+                $this->payload($attributes)
+            );
+        } catch (ObjectNotFoundException $e) {
+            throw new \Exception($e);
+        }
+        return $this;
+    }
+
      /**
      * Extract the private data
      * @return type
