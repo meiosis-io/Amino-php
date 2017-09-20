@@ -48,25 +48,24 @@ class CMSPage extends CRMObject
 
     public function getHierarchy($pageID = false)
     {
-        $endpoint = "/cms/hierarchy/{$this->siteToken}";
-        if ($pageId) {
+        $endpoint = "cms/hierarchy/{$this->siteToken}";
+        if ($pageID) {
             $endpoint .= "/{$pageID}";
         }
-
+        $result = null;
         try {
-            $this->data = $this->apiClient->get(
+            $result = $this->apiClient->get(
                 $endpoint,
                 $this->payload()
             );
         } catch (ObjectNotFoundException $e) {
             throw new \Exception($e);
         }
-        return $this;
+        return $result;
     }
 
     public function bySlug($slug)
     {
-
         try {
             $this->data = $this->apiClient->get(
                 $this->endpoint . $this->siteToken . '/page/',
