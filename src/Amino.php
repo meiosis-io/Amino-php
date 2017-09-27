@@ -3,6 +3,7 @@ namespace Meiosis;
 
 use Meiosis\Constants\Api;
 use Meiosis\Endpoints\CMSPage;
+use Meiosis\Endpoints\CMSPageAttribute;
 use Meiosis\Endpoints\Customer;
 use Meiosis\Endpoints\Organization;
 use Meiosis\Endpoints\Transaction;
@@ -108,9 +109,9 @@ class Amino
         return $page;
     }
 
-    public function pageAttributes()
+    public function pageAttributes($pageType)
     {
-        $attribute = new CMSPageAttribute($this->apikey, $this->teamID, $this->api_url);
+        $attribute = new CMSPageAttribute($this->apikey, $this->teamID, $this->api_url, $pageType);
         return $attribute;
     }
 }
