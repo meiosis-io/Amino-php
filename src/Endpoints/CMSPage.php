@@ -3,8 +3,9 @@ namespace Meiosis\Endpoints;
 
 use Meiosis\CRMObject;
 use Meiosis\Constants\Api;
-use Meiosis\Exceptions\ObjectNotPopulatedException;
 use Meiosis\Exceptions\ObjectNotFoundException;
+use Meiosis\Exceptions\ObjectNotPopulatedException;
+use Meiosis\Models\Page;
 
 class CMSPage extends CRMObject
 {
@@ -34,12 +35,13 @@ class CMSPage extends CRMObject
 
     public function byId($pageID)
     {
-        $this->data = $this->apiClient->get(
+        $page = $this->apiClient->get(
             $this->endpoint . $this->siteToken . '/page/' . $pageID,
             $this->payload()
         );
 
-        return $this;
+
+        return new Page($page);
     }
 
     public function getHierarchy($pageID = false)
@@ -55,19 +57,29 @@ class CMSPage extends CRMObject
             $this->payload()
         );
 
-        return $result;
+        $data = [];
+        foreach ($result as $page) {
+            $data[] = new Page((array) $page);
+        }
+
+        return $data;
     }
 
     public function bySlug($slug)
     {
-        $this->data = $this->apiClient->get(
+        $result = $this->apiClient->get(
             $this->endpoint . $this->siteToken . '/page/',
             $this->payload([
                 'slug' => $slug
             ])
         );
 
-        return $this;
+        $data = [];
+        foreach ($result as $page) {
+            $data[] = new Page($page);
+        }
+
+        return $data;
     }
 
     /**
@@ -75,12 +87,17 @@ class CMSPage extends CRMObject
      */
     public function byAttributes($attributes)
     {
-        $this->data = $this->apiClient->get(
+        $result = $this->apiClient->get(
             $this->endpoint . $this->siteToken . '/page/',
             $this->payload($attributes)
         );
 
-        return $this;
+        $data = [];
+        foreach ($result as $page) {
+            $data[] = new Page($page);
+        }
+
+        return $data;
     }
 
      /**

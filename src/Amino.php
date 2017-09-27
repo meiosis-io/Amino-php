@@ -107,4 +107,10 @@ class Amino
         $page->setSiteToken($siteToken);
         return $page;
     }
+
+    public function pageAttributes()
+    {
+        $attribute = new CMSPageAttribute($this->apikey, $this->teamID, $this->api_url);
+        return $attribute;
+    }
 }
