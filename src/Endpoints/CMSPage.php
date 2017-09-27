@@ -34,15 +34,11 @@ class CMSPage extends CRMObject
 
     public function byId($pageID)
     {
+        $this->data = $this->apiClient->get(
+            $this->endpoint . $this->siteToken . '/page/' . $pageID,
+            $this->payload()
+        );
 
-        try {
-            $this->data = $this->apiClient->get(
-                $this->endpoint . $this->siteToken . '/page/' . $pageID,
-                $this->payload()
-            );
-        } catch (ObjectNotFoundException $e) {
-            throw new \Exception($e);
-        }
         return $this;
     }
 
@@ -53,29 +49,24 @@ class CMSPage extends CRMObject
             $endpoint .= "/{$pageID}";
         }
         $result = null;
-        try {
-            $result = $this->apiClient->get(
-                $endpoint,
-                $this->payload()
-            );
-        } catch (ObjectNotFoundException $e) {
-            throw new \Exception($e);
-        }
+
+        $result = $this->apiClient->get(
+            $endpoint,
+            $this->payload()
+        );
+
         return $result;
     }
 
     public function bySlug($slug)
     {
-        try {
-            $this->data = $this->apiClient->get(
-                $this->endpoint . $this->siteToken . '/page/',
-                $this->payload([
-                    'slug' => $slug
-                ])
-            );
-        } catch (ObjectNotFoundException $e) {
-            throw new \Exception($e);
-        }
+        $this->data = $this->apiClient->get(
+            $this->endpoint . $this->siteToken . '/page/',
+            $this->payload([
+                'slug' => $slug
+            ])
+        );
+
         return $this;
     }
 
@@ -84,14 +75,11 @@ class CMSPage extends CRMObject
      */
     public function byAttributes($attributes)
     {
-        try {
-            $this->data = $this->apiClient->get(
-                $this->endpoint . $this->siteToken . '/page/',
-                $this->payload($attributes)
-            );
-        } catch (ObjectNotFoundException $e) {
-            throw new \Exception($e);
-        }
+        $this->data = $this->apiClient->get(
+            $this->endpoint . $this->siteToken . '/page/',
+            $this->payload($attributes)
+        );
+
         return $this;
     }
 
