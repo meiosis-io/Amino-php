@@ -4,11 +4,18 @@ namespace Meiosis\Models;
 
 class BaseModel
 {
-    protected $rawData = [];
+    protected $data = [];
+    protected $crmObject;
 
-    public function __construct($data = [])
+    public function __construct($data = [], $crmObject = null)
     {
         $this->populate((array) $data);
+        $this->crmObject = $crmObject;
+    }
+
+    public static function getNativeFields()
+    {
+        return static::$native;
     }
 
     public function populate(array $data)
@@ -22,8 +29,45 @@ class BaseModel
                 continue;
             }
 
-            $this->rawData[$safeKey] =  $item;
+            $this->data[$safeKey] =  $item;
         }
+    }
+
+    /**
+     * Extract the raw data array
+     * @return array
+     */
+    public function extract()
+    {
+        return $this->data;
+    }
+
+    /**
+     * Save our current instance
+     * @return
+     */
+    public function save()
+    {
+        $new = $this->crmObject->save($this);
+        $this->populate($new->extract());
+
+        return $this;
+    }
+
+    /**
+     * Reload the data from the api
+     * @return BaseModel
+     */
+    public function refresh()
+    {
+        if (is_null($this->id)) {
+            throw new ObjectNotPopulatedException('Can not refresh a customer that has not been saved');
+        }
+
+        $new = $this->crmObject->find($this->id);
+        $this->populate($new->extract());
+
+        return $this;
     }
 
     public function convertToKey($string)
@@ -34,13 +78,13 @@ class BaseModel
 
     public function __set($name, $value)
     {
-        $this->rawData[$name] = $value;
+        $this->data[$name] = $value;
     }
 
     public function __get($name)
     {
-        if (array_key_exists($name, $this->rawData)) {
-            return $this->rawData[$name];
+        if (array_key_exists($name, $this->data)) {
+            return $this->data[$name];
         }
 
         return null;

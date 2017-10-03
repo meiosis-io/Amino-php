@@ -37,9 +37,11 @@ class ApiClient
         return $this->checkAndReturnResponse($result);
     }
 
-    public function delete()
+    public function delete($endpoint, $queryParams)
     {
+        $result = $this->client->request('DELETE', $endpoint, ['query' => $queryParams]);
 
+        return $this->checkAndReturnResponse($result);
     }
 
     private function checkAndReturnResponse($response)

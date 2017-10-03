@@ -11,6 +11,6 @@ class Page extends BaseModel
         foreach ($children as $child) {
             $childData[] = new Page($child);
         }
-        $this->rawData['children'] = $childData;
+        $this->data['children'] = $childData;
     }
 }

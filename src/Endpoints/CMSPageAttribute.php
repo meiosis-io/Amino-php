@@ -2,7 +2,7 @@
 
 namespace Meiosis\Endpoints;
 
-use Meiosis\CRMObject;
+use Meiosis\Endpoints\CRMObject;
 use Meiosis\Models\PageAttribute;
 
 class CMSPageAttribute extends CRMObject
