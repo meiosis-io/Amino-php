@@ -13,12 +13,6 @@ class ConnectorTest extends TestCase
         $dotenv->load();
     }
 
-    public function testApiVersion()
-    {
-        // Make sure we're still expecting the same version
-        $this->assertEquals(Amino::API_VERSION, 1);
-    }
-
     // Test that our connector works
     public function testConnector()
     {

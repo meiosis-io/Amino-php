@@ -2,6 +2,8 @@
 
 namespace Meiosis\Models;
 
+use Meiosis\Exceptions\ObjectNotPopulatedException;
+
 class BaseModel
 {
     protected $data = [];
@@ -9,7 +11,14 @@ class BaseModel
 
     public function __construct($data = [], $crmObject = null)
     {
-        $this->populate((array) $data);
+        if (empty($data)) {
+            $this->populate(static::$native);
+        }
+
+        if (!empty($data)) {
+            $this->populate((array) $data);
+        }
+
         $this->crmObject = $crmObject;
     }
 
@@ -78,15 +87,32 @@ class BaseModel
 
     public function __set($name, $value)
     {
+        // Defer to the set method if it exists...
+        $safeKey = $this->convertToKey($name);
+        $func = 'set'.strtoupper($safeKey);
+
+        if (method_exists($this, $func)) {
+            return $this->{$func}($value);
+        }
+
         $this->data[$name] = $value;
     }
 
     public function __get($name)
     {
+        // Defer to the get method if it exists...
+        $safeKey = $this->convertToKey($name);
+        $func = 'get'.strtoupper($safeKey);
+        if (method_exists($this, $func)) {
+            return $this->{$func}();
+        }
+
+        // Try top get the value from the data array
         if (array_key_exists($name, $this->data)) {
             return $this->data[$name];
         }
 
+        // We have nothing!
         return null;
     }
 }

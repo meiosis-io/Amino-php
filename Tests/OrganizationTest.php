@@ -8,20 +8,25 @@ use PHPUnit\Framework\TestCase;
 
 class OrganizationTest extends TestCase
 {
+    public static $amino = null;
+
     public static function setupBeforeClass()
     {
         $dotenv = new Dotenv(__DIR__.'/..');
         $dotenv->load();
+
+        // Try to find a customer
+        $amino = new Amino(getenv('API_TOKEN'), getenv('API_TEAM'));
+        $amino->setCustomBaseUrl(getenv('API_BASE_URL'));
+
+        self::$amino = $amino;
     }
 
     public function testOrganizationCreation()
     {
         $orgData = [];
 
-        $amino = new Amino(getenv('API_TOKEN'), getenv('API_TEAM'));
-        $amino->setCustomBaseUrl(getenv('API_BASE_URL'));
-
-        $organization = $amino->organizations()->blueprint();
+        $organization = self::$amino->organizations()->blueprint();
 
         $organization->name = 'PhpUnit Intl, llc, co';
         $organization->save();
@@ -40,10 +45,7 @@ class OrganizationTest extends TestCase
      */
     public function testOrganizationSearch(array $orgData)
     {
-        $amino = new Amino(getenv('API_TOKEN'), getenv('API_TEAM'));
-        $amino->setCustomBaseUrl(getenv('API_BASE_URL'));
-
-        $organization = $amino->organizations()->find($orgData['id']);
+        $organization = self::$amino->organizations()->find($orgData['id']);
         $this->assertEquals($organization->name, $orgData['name']);
 
         return $orgData;
@@ -54,10 +56,7 @@ class OrganizationTest extends TestCase
      */
     public function testOrganizationUpdate(array $orgData)
     {
-        $amino = new Amino(getenv('API_TOKEN'), getenv('API_TEAM'));
-        $amino->setCustomBaseUrl(getenv('API_BASE_URL'));
-
-        $organization = $amino->organizations()->find($orgData['id']);
+        $organization = self::$amino->organizations()->find($orgData['id']);
 
         $newName = "PHPUNIT INTERNATIONAL UNLIMITED COMPANY";
         $organization->name = $newName;
@@ -71,10 +70,7 @@ class OrganizationTest extends TestCase
      */
     public function testOrganizationDelete(array $orgData)
     {
-        $amino = new Amino(getenv('API_TOKEN'), getenv('API_TEAM'));
-        $amino->setCustomBaseUrl(getenv('API_BASE_URL'));
-
-        $result = $amino->organizations()->delete($orgData['id']);
+        $result = self::$amino->organizations()->delete($orgData['id']);
         $this->assertObjectHasAttribute('success', $result);
 
         return $orgData;
@@ -86,9 +82,6 @@ class OrganizationTest extends TestCase
     public function testFailedOrganizationSearch(array $orgData)
     {
         $this->expectException(ObjectNotFoundException::class);
-
-        $amino = new Amino(getenv('API_TOKEN'), getenv('API_TEAM'));
-        $amino->setCustomBaseUrl(getenv('API_BASE_URL'));
-        $amino->organizations()->find($orgData['id']);
+        self::$amino->organizations()->find($orgData['id']);
     }
 }

@@ -6,7 +6,7 @@ use Meiosis\Endpoints\CMSPage;
 use Meiosis\Endpoints\CMSPageAttribute;
 use Meiosis\Endpoints\CRMCustomer;
 use Meiosis\Endpoints\CRMOrganization;
-// use Meiosis\Endpoints\CRMTransaction;
+use Meiosis\Endpoints\CRMTransaction;
 // use Meiosis\Endpoints\Customer;
 // use Meiosis\Endpoints\Organization;
 // use Meiosis\Endpoints\Transaction;
@@ -58,14 +58,17 @@ class Amino
 
     public function customers()
     {
-        $CRMCustomer = new CRMCustomer($this->apikey, $this->teamID, $this->api_url);
-        return $CRMCustomer;
+        return new CRMCustomer($this->apikey, $this->teamID, $this->api_url);
     }
 
     public function organizations()
     {
-        $CRMOrganization = new CRMOrganization($this->apikey, $this->teamID, $this->api_url);
-        return $CRMOrganization;
+        return new CRMOrganization($this->apikey, $this->teamID, $this->api_url);
+    }
+
+    public function transactions()
+    {
+        return new CRMTransaction($this->apikey, $this->teamID, $this->api_url);
     }
 
     public function pages($siteToken)
@@ -77,8 +80,7 @@ class Amino
 
     public function pageAttributes($pageType)
     {
-        $attribute = new CMSPageAttribute($this->apikey, $this->teamID, $this->api_url, $pageType);
-        return $attribute;
+        return new CMSPageAttribute($this->apikey, $this->teamID, $this->api_url, $pageType);
     }
 
     // public function customer($identifier)
