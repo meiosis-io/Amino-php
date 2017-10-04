@@ -144,17 +144,19 @@ The transaction end points will return instances of the `Meiosis\Endpoints\Trans
 ```php
 $customer = $amino->cutomers()->find('someemail@example.com');
 
- // Create a transaction Object
+// Create a transaction Object
 $transaction = $amino->transactions()->blueprint();
+
+// Attach the customer
 $transaction->customer = $customer;
 
-// Add an item
+// Create an item
 $item = new Meiosis\Models\TransactionItem();
 $item->price = 5.00;
 $item->quantity = 2.25;
 
 // Add the item to the transaction
-$transaction->addItem();
+$transaction->addItem($item);
 
 // Save the transaction
 $transaction->save();
