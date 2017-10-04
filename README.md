@@ -141,31 +141,21 @@ The transaction end points will return instances of the `Meiosis\Endpoints\Trans
 
 ### Examples
 
-Record a new transaction against a customer
-
 ```php
-// Record a transaction
-$transactionData = [
-    'items' => [
-        [
-            'item_id' => '12345', // Optional
-            'description' => 'Some Items Description', // Optional
-            'price' => 15.25, // Required
-            'quantity' => 5.5, // Optional, Defaults to 1
-        ],[
-            'item_id' => '45342', // Optional
-            'description' => 'Some Other Description', // Optional
-            'price' => 10.05, // Required
-            'quantity' => 2, // Optional, Defaults to 1
-        ]
-    ]
-];
+$customer = $amino->cutomers()->find('someemail@example.com');
 
+ // Create a transaction Object
+$transaction = $amino->transactions()->blueprint();
+$transaction->customer = $customer;
 
-// Or without Item Data
-$transactionData = [
-    'total' => 100.00
-];
+// Add an item
+$item = new Meiosis\Models\TransactionItem();
+$item->price = 5.00;
+$item->quantity = 2.25;
 
-$amino->recordTransaction($customer, $transactionData);
+// Add the item to the transaction
+$transaction->addItem();
+
+// Save the transaction
+$transaction->save();
 ```
