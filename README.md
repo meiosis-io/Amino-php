@@ -142,7 +142,7 @@ The transaction end points will return instances of the `Meiosis\Endpoints\Trans
 ### Examples
 
 ```php
-$customer = $amino->cutomers()->find('someemail@example.com');
+$customer = $amino->customers()->find('someemail@example.com');
 
 // Create a transaction Object
 $transaction = $amino->transactions()->blueprint();
