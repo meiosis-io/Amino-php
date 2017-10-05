@@ -1,13 +1,14 @@
 <?php
 namespace Meiosis\Endpoints;
 
-use Meiosis\Endpoints\CRMObject;
-use Meiosis\Models\Organization;
 use Meiosis\Constants\Api;
-use Meiosis\Exceptions\ObjectNotPopulatedException;
+use Meiosis\Endpoints\CRMObject;
+use Meiosis\Endpoints\CRMObjectInterface;
 use Meiosis\Exceptions\ObjectNotFoundException;
+use Meiosis\Exceptions\ObjectNotPopulatedException;
+use Meiosis\Models\Organization;
 
-class CRMOrganization extends CRMObject
+class CRMOrganization extends CRMObject implements CRMObjectInterface
 {
     private $endpoint = 'organizations/';
 

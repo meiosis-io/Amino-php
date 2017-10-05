@@ -3,9 +3,10 @@
 namespace Meiosis\Endpoints;
 
 use Meiosis\Endpoints\CRMObject;
+use Meiosis\Endpoints\CRMObjectInterface;
 use Meiosis\Models\PageAttribute;
 
-class CMSPageAttribute extends CRMObject
+class CMSPageAttribute extends CRMObject implements CRMObjectInterface
 {
     private $endpoint = 'cms/page-attributes/';
     protected $data = null;

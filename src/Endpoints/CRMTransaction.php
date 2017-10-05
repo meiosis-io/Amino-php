@@ -3,12 +3,13 @@ namespace Meiosis\Endpoints;
 
 use Meiosis\Constants\Api;
 use Meiosis\Endpoints\CRMObject;
+use Meiosis\Endpoints\CRMObjectInterface;
 use Meiosis\Exceptions\InvalidEndpointException;
 use Meiosis\Exceptions\ObjectNotFoundException;
 use Meiosis\Exceptions\ObjectNotPopulatedException;
 use Meiosis\Models\Transaction;
 
-class CRMTransaction extends CRMObject
+class CRMTransaction extends CRMObject implements CRMObjectInterface
 {
     private $endpoint = 'transactions/';
 

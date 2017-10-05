@@ -8,42 +8,124 @@ use PHPUnit\Framework\TestCase;
 
 class CMSTest extends TestCase
 {
+    public static $amino = null;
+
     public static function setupBeforeClass()
     {
         $dotenv = new Dotenv(__DIR__.'/..');
         $dotenv->load();
+
+        // Try to find a customer
+        $amino = new Amino(getenv('API_TOKEN'), getenv('API_TEAM'));
+        $amino->setCustomBaseUrl(getenv('API_BASE_URL'));
+
+        self::$amino = $amino;
     }
 
     public function testSiteCreation()
     {
-        $this->assertTrue(true);
+        $site = self::$amino->sites()->blueprint();
+        $site->name = "PHPUnit Test Site";
+        $site->domains = "localhost";
+        $site->description = "Some Test Site";
+        $site->save();
+
+        $this->assertNotNull($site->id);
+        $this->assertEquals($site->name, 'PHPUnit Test Site');
+
+        return $site;
     }
 
-    public function testSiteUpdate()
+    /**
+     * @depends testSiteCreation
+     */
+    public function testSiteUpdate($site)
     {
-        $this->assertTrue(true);
+        $newDesc = "SomeNewDesc";
+        $oldName = $site->name;
+
+        $site->description = $newDesc;
+        $site->save();
+
+        $this->assertEquals($site->description, $newDesc);
+        $this->assertEquals($site->name, $oldName);
+
+        return $site;
+    }
+
+    /**
+     * @depends testSiteUpdate
+     */
+    public function testPageTypeCreation($site)
+    {
+        $newType = self::$amino->pageTypes()
+            ->setSiteToken($site->id)
+            ->blueprint();
+
+        $newType->name = "Custom Attribute";
+        $newType->save();
+        $this->assertNotNull($newType->id);
+
+        return $newType;
+    }
+
+    /**
+     * @depends testSiteUpdate
+     */
+    public function testPageTypeAttributeCreation()
+    {
+        // Need a test
+    }
+
+    /**
+     * @depends testSiteUpdate
+     */
+    public function testPageCreation($site)
+    {
+        $page = self::$amino->pages($site->id)->blueprint();
+        $page->name = "PHPUnit Test page";
+        $page->excerpt = "Test Page";
+        $page->content = 'Hello';
+        $page->save();
+
+        $this->assertNotNull($page->id);
+        $this->assertEquals($page->name, "PHPUnit Test page");
+
+        return $page;
+    }
+
+    /**
+     * @depends testPageCreation
+     */
+    public function testPageUpdate($page)
+    {
+        $oldName = $page->name;
+        $oldID = $page->id;
+        $page->name = "Some New Name";
+        $page->save();
+
+        $this->assertNotEquals($oldName, $page->name);
+        $this->assertEquals($oldID, $page->id);
+
+        return $page;
     }
 
     /**
      * @depends testPageUpdate
-     **/
-    public function testSiteDelete()
+     * @depends testSiteUpdate
+     */
+    public function testPageDelete($page, $site)
     {
-        $this->assertTrue(true);
+        $result = self::$amino->pages($site->id)->delete($page->id);
+        $this->assertObjectHasAttribute('success', $result);
     }
 
-    public function testPageCreation()
+    /**
+     * @depends testSiteUpdate
+     */
+    public function testSiteDelete($site)
     {
-        $this->assertTrue(true);
-    }
-
-    public function testPageUpdate()
-    {
-        $this->assertTrue(true);
-    }
-
-    public function testPageDelete()
-    {
-        $this->assertTrue(true);
+        $result = self::$amino->sites()->delete($site->id);
+        $this->assertObjectHasAttribute('message', $result);
     }
 }

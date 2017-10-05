@@ -9,36 +9,16 @@ abstract class CRMObject
     protected $token;
     protected $teamID;
     protected $apiClient;
+    protected $apiUrl;
 
     // Instantiate the object with the API credentials, and build the client
     public function __construct($apikey, $teamID, $api_url)
     {
         $this->token  = urlencode($apikey);
         $this->teamID = urlencode($teamID);
-        $this->apiClient = new ApiClient($api_url);
+        $this->apiUrl = $api_url;
+        $this->apiClient = new ApiClient($this->apiUrl);
     }
-
-    /**
-     * Given an identifier for our object, find and return exactly one
-     * @param string $identifier
-     * @return type
-     */
-    abstract public function find($identifier);
-
-    /**
-     * Retun an empty instance of the appropriate Model
-     * @return type
-     */
-    abstract public function blueprint();
-
-    /**
-     * Given an object, save or update it
-     * @param object $object
-     * @return type
-     */
-    abstract public function save($object);
-
-    abstract public function delete($item);
 
     /**
      * Build the payload payload to supply to the APIClient
