@@ -55,6 +55,16 @@ class CMSPageAttribute extends CRMObject implements CRMObjectInterface
         throw new \Exception('Not Implemented - Use ->search($key, $value) instead');
     }
 
+    public function blueprint()
+    {
+        throw new \Exception('Not Implemented');
+    }
+
+    public function save($object)
+    {
+        throw new \Exception('Not Implemented');
+    }
+
     public function create($data)
     {
         throw new \Exception('Not Implemented');
