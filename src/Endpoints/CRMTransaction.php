@@ -31,7 +31,6 @@ class CRMTransaction extends CRMObject
      * Search
      * @return type
      */
-
     public function search($searchArray)
     {
         $result = $this->apiClient->get(

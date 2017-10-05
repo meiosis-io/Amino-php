@@ -13,4 +13,37 @@ class CMSTest extends TestCase
         $dotenv = new Dotenv(__DIR__.'/..');
         $dotenv->load();
     }
+
+    public function testSiteCreation()
+    {
+        $this->assertTrue(true);
+    }
+
+    public function testSiteUpdate()
+    {
+        $this->assertTrue(true);
+    }
+
+    /**
+     * @depends testPageUpdate
+     **/
+    public function testSiteDelete()
+    {
+        $this->assertTrue(true);
+    }
+
+    public function testPageCreation()
+    {
+        $this->assertTrue(true);
+    }
+
+    public function testPageUpdate()
+    {
+        $this->assertTrue(true);
+    }
+
+    public function testPageDelete()
+    {
+        $this->assertTrue(true);
+    }
 }

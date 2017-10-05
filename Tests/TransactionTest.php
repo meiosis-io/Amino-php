@@ -36,6 +36,11 @@ class TransactionTest extends TestCase
         self::$customer = $customer;
     }
 
+    public static function tearDownAfterClass()
+    {
+        // self::$amino->customers()->delete(self::$customer->id);
+    }
+
     public function testTransactionCreation()
     {
         // Get the transaction
@@ -44,7 +49,7 @@ class TransactionTest extends TestCase
 
         for ($i = 1; $i <= 10; $i++) {
             $item = new TransactionItem();
-            $item->id = 'brittany-'.$i;
+            $item->id = 'item-'.$i;
             $item->price = 5;
             $item->quantity = 2;
             $transaction->addItem($item);
@@ -62,7 +67,7 @@ class TransactionTest extends TestCase
     /**
      * @depends testTransactionCreation
      */
-    public function testTransactionUpdates($transaction)
+    public function testTransactionSearch($transaction)
     {
         // This should fail, as transactions can only be created, never updated.
         $this->expectException(InvalidEndpointException::class);
@@ -84,5 +89,16 @@ class TransactionTest extends TestCase
 
         $this->assertNotEquals($oldID, $transaction->id);
         $this->assertEquals($oldTotal * -1, $transaction->total);
+
+        return $transaction;
+    }
+
+    /**
+     * @depends testVoidTransaction
+     */
+    public function testTransactionDelete($transaction)
+    {
+        $result = self::$amino->transactions()->delete($transaction->id);
+        $this->assertObjectHasAttribute('success', $result);
     }
 }
