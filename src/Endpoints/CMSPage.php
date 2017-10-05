@@ -14,33 +14,27 @@ class CMSPage extends CRMObject
 
     public function find($identifier)
     {
-        return $this->byId($identifier);
+        $page = $this->apiClient->get(
+            $this->endpoint . $this->siteToken . '/page/' . $identifier,
+            $this->payload()
+        );
+
+        return new Page($page);
     }
 
-    public function create($data)
+    public function save()
     {
-        throw new \Exception('Not Implemented');
+        //
     }
 
-    public function saveChanges()
+    public function blueprint()
     {
-        throw new \Exception('Not Implemented');
+        return new Page([], $this);
     }
 
     public function delete($identifier)
     {
         throw new \Exception('Not Implemented');
-    }
-
-    public function byId($pageID)
-    {
-        $page = $this->apiClient->get(
-            $this->endpoint . $this->siteToken . '/page/' . $pageID,
-            $this->payload()
-        );
-
-
-        return new Page($page);
     }
 
     public function getHierarchy($pageID = false)
