@@ -5,12 +5,12 @@ use Meiosis\Models\BaseModel;
 
 class Page extends BaseModel
 {
-    public function setChildren($children)
+    public function set_children($children)
     {
         $childData = [];
         foreach ($children as $child) {
             $childData[] = new Page($child);
         }
-        $this->rawData['children'] = $childData;
+        $this->data['children'] = $childData;
     }
 }

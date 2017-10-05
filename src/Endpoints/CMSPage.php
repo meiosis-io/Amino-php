@@ -1,7 +1,7 @@
 <?php
 namespace Meiosis\Endpoints;
 
-use Meiosis\CRMObject;
+use Meiosis\Endpoints\CRMObject;
 use Meiosis\Constants\Api;
 use Meiosis\Exceptions\ObjectNotFoundException;
 use Meiosis\Exceptions\ObjectNotPopulatedException;
@@ -11,7 +11,6 @@ class CMSPage extends CRMObject
 {
     private $endpoint = 'cms/site/';
     private $siteToken = '';
-    protected $data = null;
 
     public function find($identifier)
     {
@@ -20,17 +19,17 @@ class CMSPage extends CRMObject
 
     public function create($data)
     {
-
+        throw new \Exception('Not Implemented');
     }
 
     public function saveChanges()
     {
-
+        throw new \Exception('Not Implemented');
     }
 
     public function delete($identifier)
     {
-
+        throw new \Exception('Not Implemented');
     }
 
     public function byId($pageID)
@@ -98,15 +97,6 @@ class CMSPage extends CRMObject
         }
 
         return $data;
-    }
-
-     /**
-     * Extract the private data
-     * @return type
-     */
-    public function extract()
-    {
-        return $this->data;
     }
 
     public function setSiteToken($token)
