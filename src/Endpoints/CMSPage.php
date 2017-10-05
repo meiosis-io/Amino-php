@@ -22,7 +22,7 @@ class CMSPage extends CRMObject
         return new Page($page);
     }
 
-    public function save()
+    public function save($page)
     {
         //
     }
