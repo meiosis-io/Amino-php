@@ -17,7 +17,7 @@ use Meiosis\Exceptions\ObjectNotPopulatedException;
 
 class Amino
 {
-    const VERSION  = "0.1.2"; // SDK Version
+    const VERSION  = "0.1.5"; // SDK Version
     const API_VERSION  = "1"; // API Version
 
     /**
