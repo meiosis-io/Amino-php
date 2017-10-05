@@ -1,11 +1,12 @@
 <?php
 namespace Meiosis\Endpoints;
 
-use Meiosis\Endpoints\CRMObject;
-use Meiosis\Models\Transaction;
 use Meiosis\Constants\Api;
-use Meiosis\Exceptions\ObjectNotPopulatedException;
+use Meiosis\Endpoints\CRMObject;
+use Meiosis\Exceptions\InvalidEndpointException;
 use Meiosis\Exceptions\ObjectNotFoundException;
+use Meiosis\Exceptions\ObjectNotPopulatedException;
+use Meiosis\Models\Transaction;
 
 class CRMTransaction extends CRMObject
 {
@@ -92,10 +93,7 @@ class CRMTransaction extends CRMObject
      */
     protected function update($transaction)
     {
-        $updateEndpoint = $this->endpoint . $transaction->id;
-        return $this
-            ->apiClient
-            ->post($updateEndpoint, $this->payload($transaction->extract()));
+        throw new InvalidEndpointException('Existing transactions can not be updated. You should destroy and re-issue the transaction.');
     }
 
     /**

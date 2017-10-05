@@ -7,17 +7,22 @@ class TransactionItem extends BaseModel
     protected static $native = [
         'price'         => null, // Required
         'quantity'      => 1, // Optional, Defaults to 1
-        'item_id'       => null, // Optional
+        'id'       => null, // Optional
         'description'   => null, // Optional
     ];
 
-    public function setPrice($price)
+    public function set_price($price)
     {
         $this->data['price'] = floatval($price);
     }
 
-    public function setQuantity($quantity)
+    public function set_quantity($quantity)
     {
         $this->data['quantity'] = floatval($quantity);
+    }
+
+    public function set_item_id($item)
+    {
+        $this->data['id'] = $item;
     }
 }

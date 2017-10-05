@@ -147,6 +147,11 @@ $customer = $amino->customers()->find('someemail@example.com');
 // Create a transaction Object
 $transaction = $amino->transactions()->blueprint();
 
+// Alternatively, you can instantate a new transaction directly.
+// You'll need to pass it an instance of the CRMTransaction endpoint
+// in order to use it's ->save() method.
+// $transaction = new Meiosis\Models\Transaction([], $amino->transactions());
+
 // Attach the customer
 $transaction->customer = $customer;
 

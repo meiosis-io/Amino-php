@@ -30,15 +30,14 @@ class BaseModel
     public function populate(array $data)
     {
         foreach ($data as $key => $item) {
-            $safeKey = $this->convertToKey($key);
-            $func = 'set'.strtoupper($safeKey);
+            $func = 'set_'.$key;
 
             if (method_exists($this, $func)) {
                 $this->{$func}($item);
                 continue;
             }
 
-            $this->data[$safeKey] =  $item;
+            $this->data[$key] =  $item;
         }
     }
 
@@ -79,17 +78,10 @@ class BaseModel
         return $this;
     }
 
-    public function convertToKey($string)
-    {
-        $string = ucwords(str_replace(['-', '_'], ' ', $string));
-        return lcfirst(str_replace(' ', '', $string));
-    }
-
     public function __set($name, $value)
     {
         // Defer to the set method if it exists...
-        $safeKey = $this->convertToKey($name);
-        $func = 'set'.strtoupper($safeKey);
+        $func = 'set_'.$name;
 
         if (method_exists($this, $func)) {
             return $this->{$func}($value);
@@ -101,8 +93,7 @@ class BaseModel
     public function __get($name)
     {
         // Defer to the get method if it exists...
-        $safeKey = $this->convertToKey($name);
-        $func = 'get'.strtoupper($safeKey);
+        $func = 'get_'.strtoupper($name);
         if (method_exists($this, $func)) {
             return $this->{$func}();
         }

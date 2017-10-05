@@ -18,7 +18,7 @@ class Organization extends BaseModel
         'updated' => null
     ];
 
-    public function setCustomers($customers)
+    public function set_customers($customers)
     {
         $customers = [];
         foreach ($customers as $customer) {

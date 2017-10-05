@@ -1,10 +1,11 @@
 <?php
 namespace Meiosis\Models;
 
+use Meiosis\Endpoints\CRMTransaction;
+use Meiosis\Exceptions\UseOtherMethodException;
 use Meiosis\Models\BaseModel;
 use Meiosis\Models\Customer;
 use Meiosis\Models\TransactionItem;
-use Meiosis\Exceptions\UseOtherMethodException;
 
 class Transaction extends BaseModel
 {
@@ -17,7 +18,7 @@ class Transaction extends BaseModel
         'tax'           => 0, // Tax Percentage (As decimal)
     ];
 
-    public function setCustomer($customer)
+    public function set_customer($customer)
     {
         if ($customer instanceof Customer) {
             $this->data['customer'] = $customer->id;
@@ -32,9 +33,9 @@ class Transaction extends BaseModel
      * Add an Array of items
      * @param array $itemArray
      */
-    public function setItems($itemArray)
+    public function set_items($itemArray)
     {
-        $this->data['items'] = [];
+        $this->clearItems();
         foreach ($itemArray as $item) {
             $this->addItem(new TransactionItem($item));
         }
@@ -72,7 +73,7 @@ class Transaction extends BaseModel
     }
 
     // Provide back the transaction items
-    public function getItems()
+    public function get_items()
     {
         $items = [];
         foreach ($this->data['items'] as $item) {
@@ -80,5 +81,29 @@ class Transaction extends BaseModel
         }
 
         return $items;
+    }
+
+    /**
+     * Create a negative version of this transaction
+     */
+    public function void()
+    {
+        $transaction = $this->extract();
+        $transaction['id'] = null;
+
+        $transaction['total'] = $transaction['total'] * -1;
+        if (is_null($transaction['discount_type'])) {
+            $transaction['discount_type'] = 'none';
+        }
+
+        foreach ($transaction['items'] as &$item) {
+            $item['quantity'] = $item['quantity'] * -1;
+            $item['description'] = '(--VOID--) ' . $item['description'];
+        }
+
+        $newTransaction = new Transaction($transaction, $this->crmObject);
+        $newTransaction->save();
+
+        $this->populate($newTransaction->extract());
     }
 }

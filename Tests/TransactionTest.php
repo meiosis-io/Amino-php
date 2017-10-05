@@ -3,6 +3,7 @@ namespace Tests;
 
 use Dotenv\Dotenv;
 use Meiosis\Amino;
+use Meiosis\Exceptions\InvalidEndpointException;
 use Meiosis\Exceptions\ObjectNotFoundException;
 use Meiosis\Models\TransactionItem;
 use PHPUnit\Framework\TestCase;
@@ -43,6 +44,7 @@ class TransactionTest extends TestCase
 
         for ($i = 1; $i <= 10; $i++) {
             $item = new TransactionItem();
+            $item->id = 'brittany-'.$i;
             $item->price = 5;
             $item->quantity = 2;
             $transaction->addItem($item);
@@ -53,5 +55,34 @@ class TransactionTest extends TestCase
         $transaction->save();
 
         $this->assertNotNull($transaction->id);
+
+        return $transaction;
+    }
+
+    /**
+     * @depends testTransactionCreation
+     */
+    public function testTransactionUpdates($transaction)
+    {
+        // This should fail, as transactions can only be created, never updated.
+        $this->expectException(InvalidEndpointException::class);
+        // Update the transaction
+        $transaction->save();
+    }
+
+    /**
+     * @depends testTransactionCreation
+     */
+    public function testVoidTransaction($transaction)
+    {
+        // Transaction total should be negative, and new ID generated.
+        $oldID = $transaction->id;
+        $oldTotal = $transaction->total;
+
+        // Void the transaction
+        $transaction->void();
+
+        $this->assertNotEquals($oldID, $transaction->id);
+        $this->assertEquals($oldTotal * -1, $transaction->total);
     }
 }
