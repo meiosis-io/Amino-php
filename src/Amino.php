@@ -2,7 +2,9 @@
 namespace Meiosis;
 
 use Meiosis\Constants\Api;
+use Meiosis\Endpoints\CMSSite;
 use Meiosis\Endpoints\CMSPage;
+use Meiosis\Endpoints\CMSPageType;
 use Meiosis\Endpoints\CMSPageAttribute;
 use Meiosis\Endpoints\CRMCustomer;
 use Meiosis\Endpoints\CRMOrganization;
@@ -71,11 +73,21 @@ class Amino
         return new CRMTransaction($this->apikey, $this->teamID, $this->api_url);
     }
 
+    public function sites()
+    {
+        return new CMSSite($this->apikey, $this->teamID, $this->api_url);
+    }
+
     public function pages($siteToken)
     {
         $page = new CMSPage($this->apikey, $this->teamID, $this->api_url);
         $page->setSiteToken($siteToken);
         return $page;
+    }
+
+    public function pageTypes()
+    {
+        return new CMSPageType($this->apikey, $this->teamID, $this->api_url);
     }
 
     public function pageAttributes($pageType)
