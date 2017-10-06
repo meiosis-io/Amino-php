@@ -13,7 +13,6 @@ class PageAttribute extends BaseModel
         'type'              => null,
         'options'           => null,
         'rules'             => 'none',
-        'ordinal'           => 0,
-        'cms_page_type_id'  => null
+        'ordinal'           => 0
     ];
 }

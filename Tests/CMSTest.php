@@ -70,11 +70,49 @@ class CMSTest extends TestCase
     }
 
     /**
-     * @depends testSiteUpdate
+     * @depends testPageTypeCreation
      */
-    public function testPageTypeAttributeCreation()
+    public function testPageTypeAttributeCreation($pageType)
     {
-        // Need a test
+        // Load All attributes
+        $attributes = self::$amino->pageAttributes($pageType->id);
+        $newAttribute = $attributes->blueprint();
+
+        $newAttribute->name = "Test Attribute";
+        $newAttribute->type = "text";
+        $newAttribute->save();
+
+        $this->assertNotNull($newAttribute->id);
+
+        $newAttribute->type = "rich";
+        $newAttribute->save();
+
+        $this->assertEquals($newAttribute->type, 'rich');
+
+        return $newAttribute;
+    }
+
+    /**
+     * @depends testPageTypeCreation
+     * @depends testPageTypeAttributeCreation
+     **/
+    public function testPageAttributeListAndSearch($pageType, $attribute)
+    {
+        $crmObject = self::$amino->pageAttributes($pageType->id);
+        $this->assertEquals($crmObject->all()[0]->name, $attribute->name);
+
+        $attrSearch = $crmObject->search('name', 'Test Attribute');
+        $this->assertEquals($attrSearch->name, $attribute->name);
+    }
+
+    /**
+     * @depends testPageTypeCreation
+     * @depends testPageTypeAttributeCreation
+     **/
+    public function testPageAttributeDelete($pageType, $attribute)
+    {
+        $result = self::$amino->pageAttributes($pageType->id)->delete($attribute->id);
+        $this->assertObjectHasAttribute('message', $result);
     }
 
     /**
