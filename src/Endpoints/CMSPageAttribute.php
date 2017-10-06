@@ -4,6 +4,7 @@ namespace Meiosis\Endpoints;
 
 use Meiosis\Endpoints\CRMObject;
 use Meiosis\Endpoints\CRMObjectInterface;
+use Meiosis\Exceptions\ObjectNotFoundException;
 use Meiosis\Models\PageAttribute;
 
 class CMSPageAttribute extends CRMObject implements CRMObjectInterface
@@ -17,7 +18,7 @@ class CMSPageAttribute extends CRMObject implements CRMObjectInterface
     {
         parent::__construct($apikey, $teamID, $api_url);
         $this->pageType = $pageType;
-        $this->load($pageType);
+        $this->endpoint .= $pageType . '/';
     }
 
     /**
@@ -28,7 +29,9 @@ class CMSPageAttribute extends CRMObject implements CRMObjectInterface
      */
     public function search($field, $value)
     {
-        foreach ($this->attributes as $attribute) {
+        $attributes = $this->all();
+
+        foreach ($attributes as $attribute) {
             if ($attribute->{$field} == $value) {
                 return $attribute;
             }
@@ -37,46 +40,82 @@ class CMSPageAttribute extends CRMObject implements CRMObjectInterface
         return null;
     }
 
-    public function load($pageType)
+    public function find($identifier)
     {
+        $result = $this->apiClient->get(
+            $this->endpoint,
+            $this->payload(['id', $identifier])
+        );
+
+        if (isset($result[0])) {
+            return new PageAttribute($result[0], $this);
+        }
+
+        throw new ObjectNotFoundException('Not Found');
+    }
+
+    public function all()
+    {
+        $attributes = [];
         $response = $this->apiClient->get(
-            $this->endpoint . $pageType,
+            $this->endpoint,
             $this->payload()
         );
 
         foreach ($response as $attribute) {
-            $this->attributes[] = new PageAttribute($attribute);
+            $attributes[] = new PageAttribute($attribute, $this);
         }
-        return $this;
-    }
 
-    public function find($identifier)
-    {
-        throw new \Exception('Not Implemented - Use ->search($key, $value) instead');
+        return $attributes;
     }
 
     public function blueprint()
     {
-        throw new \Exception('Not Implemented');
+        return new PageAttribute([], $this);
     }
 
-    public function save($object)
+    public function save($attribute)
     {
-        throw new \Exception('Not Implemented');
+        if (is_null($attribute->id)) {
+            $result = $this->create($attribute);
+        }
+
+        if (!is_null($attribute->id)) {
+            $result = $this->update($attribute);
+        }
+
+        return $this->find($result->id);
     }
 
-    public function create($data)
+    /**
+     * Creates an attribute if it doesn't
+     * @param attribute $attribute
+     * @return
+     */
+    protected function create($attribute)
     {
-        throw new \Exception('Not Implemented');
+        return $this
+            ->apiClient
+            ->post($this->endpoint, $this->payload($attribute->extract()));
     }
 
-    public function saveChanges()
+    /**
+     * Updates an existing attribute
+     * @param attribute $attribute
+     * @return type
+     */
+    protected function update($attribute)
     {
-        throw new \Exception('Not Implemented');
+        $updateEndpoint = $this->endpoint . $attribute->id;
+        return $this
+            ->apiClient
+            ->post($updateEndpoint, $this->payload($attribute->extract()));
     }
 
     public function delete($identifier)
     {
-        throw new \Exception('Not Implemented');
+        return $this
+            ->apiClient
+            ->delete($this->endpoint . $identifier, $this->payload());
     }
 }
