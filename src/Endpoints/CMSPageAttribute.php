@@ -42,16 +42,12 @@ class CMSPageAttribute extends CRMObject implements CRMObjectInterface
 
     public function find($identifier)
     {
-        $result = $this->apiClient->get(
-            $this->endpoint,
-            $this->payload(['id', $identifier])
-        );
-
-        if (isset($result[0])) {
-            return new PageAttribute($result[0], $this);
+        $found = $this->search('id', $identifier);
+        if (is_null($found)) {
+            throw new ObjectNotFoundException('Not Found');
         }
 
-        throw new ObjectNotFoundException('Not Found');
+        return $found;
     }
 
     public function all()

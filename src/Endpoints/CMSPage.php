@@ -94,10 +94,7 @@ class CMSPage extends CRMObject implements CRMObjectInterface
         }
         $result = null;
 
-        $result = $this->apiClient->get(
-            $endpoint,
-            $this->payload()
-        );
+        $result = $this->apiClient->get($endpoint, $this->payload());
 
         $data = [];
         foreach ($result as $page) {

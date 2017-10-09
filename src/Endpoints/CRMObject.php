@@ -1,8 +1,9 @@
 <?php
 namespace Meiosis\Endpoints;
 
-use Meiosis\Constants\Api;
 use Meiosis\ApiClient\ApiClient;
+use Meiosis\Constants\Api;
+use Meiosis\Models\BaseModel;
 
 abstract class CRMObject
 {
@@ -31,5 +32,27 @@ abstract class CRMObject
             'api_token' => $this->token,
             'team'      => $this->teamID
         ], $data);
+    }
+
+    /**
+     * Deletes an Existing Object
+     * @param Object|String $identifier
+     * @return type
+     */
+    public function delete($identifier)
+    {
+        $type = gettype($identifier);
+
+        if (gettype($identifier) == 'string') {
+            $deleteEndpoint = $this->endpoint . $identifier;
+        }
+
+        if ($identif instanceof BaseModel) {
+            $deleteEndpoint = $this->endpoint . $identifier->id;
+        }
+
+        return $this
+            ->apiClient
+            ->delete($deleteEndpoint, $this->payload());
     }
 }
