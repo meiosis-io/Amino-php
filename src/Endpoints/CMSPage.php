@@ -63,26 +63,6 @@ class CMSPage extends CRMObject implements CRMObjectInterface
     }
 
     /**
-     * Search by Attributes
-     * @param array $attributes
-     * @return array of Page Objects
-     */
-    public function byAttributes($attributes)
-    {
-        $result = $this->apiClient->get(
-            $this->endpoint,
-            $this->payload($attributes)
-        );
-
-        $data = [];
-        foreach ($result as $page) {
-            $data[] = new Page($page);
-        }
-
-        return $data;
-    }
-
-    /**
      * Set the site that should be used
      * @param string $token
      * @return CRMPage

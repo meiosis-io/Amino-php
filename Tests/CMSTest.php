@@ -58,8 +58,7 @@ class CMSTest extends TestCase
      */
     public function testPageTypeCreationAndUpdate($site)
     {
-        $newType = self::$amino->pageTypes()
-            ->setSiteToken($site->id)
+        $newType = self::$amino->pageTypes($site->id)
             ->blueprint();
 
         $newType->name = "Custom Attribute";
@@ -134,7 +133,7 @@ class CMSTest extends TestCase
      **/
     public function testPageTypeDelete($pageType, $site)
     {
-        $result = self::$amino->pageTypes()->setSiteToken($site->id)->delete($pageType);
+        $result = self::$amino->pageTypes($site->id)->delete($pageType);
         $this->assertObjectHasAttribute('message', $result);
     }
 
@@ -205,7 +204,7 @@ class CMSTest extends TestCase
         $this->assertEquals($found[0]->id, $page->id);
 
         // Attribute search
-        $found = $pages->byAttributes(['name' => 'Some']);
+        $found = $pages->search(['name' => 'Some']);
         $this->assertEquals($found[0]->id, $page->id);
     }
 

@@ -3,6 +3,7 @@
 namespace Meiosis\Models;
 
 use Meiosis\Exceptions\ObjectNotPopulatedException;
+use Meiosis\Exceptions\UseOtherMethodException;
 
 class BaseModel
 {
@@ -67,6 +68,10 @@ class BaseModel
      */
     public function save()
     {
+        if (is_null($this->crmObject)) {
+            throw new UseOtherMethodException('Use ->save() method on CRM Object. Model was not instantiated with CRMObject to reference.');
+        }
+
         $new = $this->crmObject->save($this);
         $this->populate($new->extract());
 

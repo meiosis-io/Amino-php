@@ -112,9 +112,11 @@ class Amino
      * Fetch a CRMObject to work with CMS Page Types
      * @return CMSPageType
      */
-    public function pageTypes()
+    public function pageTypes($siteToken)
     {
-        return new CMSPageType($this->apikey, $this->teamID, $this->api_url);
+        $type = new CMSPageType($this->apikey, $this->teamID, $this->api_url);
+        $type->setSiteToken($siteToken);
+        return $type;
     }
 
     /**

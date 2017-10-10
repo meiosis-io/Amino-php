@@ -4,6 +4,8 @@ namespace Tests;
 use Dotenv\Dotenv;
 use Meiosis\Amino;
 use Meiosis\Exceptions\UnknownApiException;
+use Meiosis\Exceptions\UseOtherMethodException;
+use Meiosis\Models\Customer;
 use PHPUnit\Framework\TestCase;
 
 class ConnectorTest extends TestCase
@@ -27,5 +29,14 @@ class ConnectorTest extends TestCase
         $return = $amino
             ->setCustomBaseUrl('http://httpbin.org/status/500')
             ->remoteTest();
+    }
+
+    public function testModelSaveExceptions()
+    {
+        $amino = new Amino(getenv('API_TOKEN'), getenv('API_TEAM'));
+        $amino->setCustomBaseUrl(getenv('API_BASE_URL'));
+        $customer = new Customer();
+        $this->expectException(UseOtherMethodException::class);
+        $customer->save();
     }
 }
