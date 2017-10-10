@@ -17,6 +17,10 @@ class Page extends BaseModel
         'published_at'      => null,
     ];
 
+    /**
+     * Set the children of the page to other page objects
+     * @param array $children
+     */
     public function set_children($children)
     {
         $childData = [];

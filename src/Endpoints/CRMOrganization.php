@@ -8,10 +8,12 @@ use Meiosis\Exceptions\ObjectNotFoundException;
 use Meiosis\Exceptions\ObjectNotPopulatedException;
 use Meiosis\Models\Organization;
 
+/**
+ * Class for working with the /organizations endpoint
+ */
 class CRMOrganization extends CRMObject implements CRMObjectInterface
 {
     protected $endpoint = 'organizations/';
-
     protected static $returnType = Organization::class;
 
     /**

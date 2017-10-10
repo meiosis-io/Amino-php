@@ -5,13 +5,34 @@ use Meiosis\ApiClient\ApiClient;
 use Meiosis\Constants\Api;
 use Meiosis\Models\BaseModel;
 
+/**
+ * Base CRM Object class
+ */
 abstract class CRMObject
 {
+    /**
+     * @var string
+     */
     protected $token;
+
+    /**
+     * @var string
+     */
     protected $teamID;
+
+    /**
+     * @var string
+     */
     protected $apiClient;
+
+    /**
+     * @var string
+     */
     protected $apiUrl;
 
+    /**
+     * @var string - Class Implementation
+     */
     protected static $returnType = BaseModel::class;
 
     // Instantiate the object with the API credentials, and build the client

@@ -7,13 +7,14 @@ use Meiosis\Endpoints\CRMObjectInterface;
 use Meiosis\Exceptions\ObjectNotFoundException;
 use Meiosis\Models\PageAttribute;
 
+/**
+ * Class for working with the /cms/page-attributes/{pageType} endpoint
+ */
 class CMSPageAttribute extends CRMObject implements CRMObjectInterface
 {
     protected $endpoint = 'cms/page-attributes/';
     protected $data = null;
     protected $pageType = null;
-    public $attributes = [];
-
     protected static $returnType = PageAttribute::class;
 
     public function __construct($apikey, $teamID, $api_url, $pageType)
@@ -59,6 +60,11 @@ class CMSPageAttribute extends CRMObject implements CRMObjectInterface
         return false;
     }
 
+    /**
+     * Override the find method to use search
+     * @param string $identifier
+     * @return CMSPageAttribute
+     */
     public function find($identifier)
     {
         $found = $this->search(['id' => $identifier]);
@@ -69,6 +75,10 @@ class CMSPageAttribute extends CRMObject implements CRMObjectInterface
         return $found;
     }
 
+    /**
+     * Return an array of all PageAttributes
+     * @return array of PageAttribute Objects
+     */
     public function all()
     {
         $attributes = [];

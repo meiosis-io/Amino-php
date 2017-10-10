@@ -8,10 +8,12 @@ use Meiosis\Exceptions\ObjectNotFoundException;
 use Meiosis\Exceptions\ObjectNotPopulatedException;
 use Meiosis\Models\Customer;
 
+/**
+ * Class for working with the /customers endpoint
+ */
 class CRMCustomer extends CRMObject implements CRMObjectInterface
 {
     protected $endpoint = 'customers/';
-
     protected static $returnType = Customer::class;
 
     /**
@@ -30,6 +32,14 @@ class CRMCustomer extends CRMObject implements CRMObjectInterface
         return new Customer($attributes, $this);
     }
 
+    /**
+     * Track an Interaction on a customer
+     * @param Customer $customer
+     * @param String $source
+     * @param String $description
+     * @param integer $priority
+     * @return Response
+     */
     public function trackInteraction(Customer $customer, $source, $description, $priority = 5)
     {
         // Save the customer if they haven't been created

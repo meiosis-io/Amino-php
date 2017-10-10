@@ -18,6 +18,10 @@ class Organization extends BaseModel
         'updated' => null
     ];
 
+    /**
+     * Set the customers array to an array of customers
+     * @param array $customers
+     */
     public function set_customers($customers)
     {
         $customers = [];

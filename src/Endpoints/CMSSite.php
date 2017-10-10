@@ -8,10 +8,12 @@ use Meiosis\Exceptions\ObjectNotFoundException;
 use Meiosis\Exceptions\ObjectNotPopulatedException;
 use Meiosis\Models\Site;
 
+/**
+ * Class for working with the /cms/site endpoint
+ */
 class CMSSite extends CRMObject implements CRMObjectInterface
 {
     protected $endpoint = 'cms/site/';
-
     protected static $returnType = Site::class;
 
     /**

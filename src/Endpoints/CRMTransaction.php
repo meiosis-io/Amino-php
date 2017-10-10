@@ -9,15 +9,17 @@ use Meiosis\Exceptions\ObjectNotFoundException;
 use Meiosis\Exceptions\ObjectNotPopulatedException;
 use Meiosis\Models\Transaction;
 
+/**
+ * Class for working with the /transactions endpoint
+ */
 class CRMTransaction extends CRMObject implements CRMObjectInterface
 {
     protected $endpoint = 'transactions/';
-
     protected static $returnType = Transaction::class;
 
     /**
-     * Search
-     * @return type
+     * Search Method - Not Available for transactions, so it will throw an exception
+     * @param array $searchArray
      */
     public function search($searchArray)
     {

@@ -15,9 +15,13 @@ class CMSPage extends CRMObject implements CRMObjectInterface
 {
     protected $endpoint = 'cms/site/';
     protected $siteToken = '';
-
     protected static $returnType = Page::class;
 
+    /**
+     * Fetch the page hierarchy for a given page, or the site as a whole
+     * @param string|bool $pageID
+     * @return array of Page Objects
+     */
     public function getHierarchy($pageID = false)
     {
         $endpoint = "cms/hierarchy/{$this->siteToken}";
@@ -36,6 +40,11 @@ class CMSPage extends CRMObject implements CRMObjectInterface
         return $data;
     }
 
+    /**
+     * Perform a page search based on a slug / url string
+     * @param string $slug
+     * @return array of Page objects
+     */
     public function bySlug($slug)
     {
         $result = $this->apiClient->get(
@@ -54,7 +63,9 @@ class CMSPage extends CRMObject implements CRMObjectInterface
     }
 
     /**
-     * Search By Attribute
+     * Search by Attributes
+     * @param array $attributes
+     * @return array of Page Objects
      */
     public function byAttributes($attributes)
     {
@@ -71,6 +82,11 @@ class CMSPage extends CRMObject implements CRMObjectInterface
         return $data;
     }
 
+    /**
+     * Set the site that should be used
+     * @param string $token
+     * @return CRMPage
+     */
     public function setSiteToken($token)
     {
         $this->siteToken = $token;
