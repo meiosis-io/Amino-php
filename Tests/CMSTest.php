@@ -56,21 +56,23 @@ class CMSTest extends TestCase
     /**
      * @depends testSiteUpdate
      */
-    public function testPageTypeCreation($site)
+    public function testPageTypeCreationAndUpdate($site)
     {
-        $newType = self::$amino->pageTypes()
-            ->setSiteToken($site->id)
+        $newType = self::$amino->pageTypes($site->id)
             ->blueprint();
 
         $newType->name = "Custom Attribute";
         $newType->save();
         $this->assertNotNull($newType->id);
 
+        $newType->name = "Attribute, Custom";
+        $newType->save();
+
         return $newType;
     }
 
     /**
-     * @depends testPageTypeCreation
+     * @depends testPageTypeCreationAndUpdate
      */
     public function testPageTypeAttributeCreation($pageType)
     {
@@ -93,7 +95,7 @@ class CMSTest extends TestCase
     }
 
     /**
-     * @depends testPageTypeCreation
+     * @depends testPageTypeCreationAndUpdate
      * @depends testPageTypeAttributeCreation
      **/
     public function testPageAttributeListAndSearch($pageType, $attribute)
@@ -101,17 +103,37 @@ class CMSTest extends TestCase
         $crmObject = self::$amino->pageAttributes($pageType->id);
         $this->assertEquals($crmObject->all()[0]->name, $attribute->name);
 
-        $attrSearch = $crmObject->search('name', 'Test Attribute');
+        // Null Search
+        $attrSearch = $crmObject->search(['name' => 'Banana Splits']);
+        $this->assertNull($attrSearch);
+
+        // Good search
+        $attrSearch = $crmObject->search(['name' => 'Test Attribute']);
         $this->assertEquals($attrSearch->name, $attribute->name);
+
+        // Not Found
+        $this->expectException(ObjectNotFoundException::class);
+        $attrSearch = $crmObject->find('INVALID');
+        var_dump($attrSearch);
     }
 
     /**
-     * @depends testPageTypeCreation
+     * @depends testPageTypeCreationAndUpdate
      * @depends testPageTypeAttributeCreation
      **/
     public function testPageAttributeDelete($pageType, $attribute)
     {
         $result = self::$amino->pageAttributes($pageType->id)->delete($attribute->id);
+        $this->assertObjectHasAttribute('message', $result);
+    }
+
+    /**
+     * @depends testPageTypeCreationAndUpdate
+     * @depends testSiteCreation
+     **/
+    public function testPageTypeDelete($pageType, $site)
+    {
+        $result = self::$amino->pageTypes($site->id)->delete($pageType);
         $this->assertObjectHasAttribute('message', $result);
     }
 
@@ -152,10 +174,54 @@ class CMSTest extends TestCase
      * @depends testPageUpdate
      * @depends testSiteUpdate
      */
+    public function testPageHierarchy($page, $site)
+    {
+        $pages = self::$amino->pages($site->id);
+
+        $spage = $pages->blueprint();
+        $spage->name = "PHPUnit Test page2";
+        $spage->excerpt = "Test Page2";
+        $spage->content = 'Hello2';
+        $spage->save();
+
+        $list = $pages->getHierarchy();
+        $this->assertEquals(count($list), 2);
+
+        $list = $pages->getHierarchy($page->id);
+        $this->assertEquals(count($list), 1);
+        $pages->delete($spage);
+    }
+
+    /**
+     * @depends testPageUpdate
+     * @depends testSiteUpdate
+     */
+    public function testPageSearches($page, $site)
+    {
+        // Slug Search....
+        $pages = self::$amino->pages($site->id);
+        $found = $pages->bySlug($page->slug);
+        $this->assertEquals($found[0]->id, $page->id);
+
+        // Attribute search
+        $found = $pages->search(['name' => 'Some']);
+        $this->assertEquals($found[0]->id, $page->id);
+    }
+
+    /**
+     * @depends testPageUpdate
+     * @depends testSiteUpdate
+     */
     public function testPageDelete($page, $site)
     {
+        // By ID
         $result = self::$amino->pages($site->id)->delete($page->id);
         $this->assertObjectHasAttribute('success', $result);
+
+        $this->expectException(ObjectNotFoundException::class);
+
+        // By Object
+        self::$amino->pages($site->id)->delete($page);
     }
 
     /**

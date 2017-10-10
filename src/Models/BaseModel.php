@@ -3,6 +3,7 @@
 namespace Meiosis\Models;
 
 use Meiosis\Exceptions\ObjectNotPopulatedException;
+use Meiosis\Exceptions\UseOtherMethodException;
 
 class BaseModel
 {
@@ -22,11 +23,20 @@ class BaseModel
         $this->crmObject = $crmObject;
     }
 
+    /**
+     * Return the native fields array
+     * @return array
+     */
     public static function getNativeFields()
     {
         return static::$native;
     }
 
+    /**
+     * Take a raw array of data and populate a new object
+     * @param array $data
+     * @return BaseModel
+     */
     public function populate(array $data)
     {
         foreach ($data as $key => $item) {
@@ -39,6 +49,8 @@ class BaseModel
 
             $this->data[$key] =  $item;
         }
+
+        return $this;
     }
 
     /**
@@ -52,10 +64,14 @@ class BaseModel
 
     /**
      * Save our current instance
-     * @return
+     * @return BaseModel
      */
     public function save()
     {
+        if (is_null($this->crmObject)) {
+            throw new UseOtherMethodException('Use ->save() method on CRM Object. Model was not instantiated with CRMObject to reference.');
+        }
+
         $new = $this->crmObject->save($this);
         $this->populate($new->extract());
 
@@ -78,6 +94,11 @@ class BaseModel
         return $this;
     }
 
+    /**
+     * Set an item on the data array, or hand off to a set_ function if available
+     * @param string $name
+     * @param mixed $value
+     */
     public function __set($name, $value)
     {
         // Defer to the set method if it exists...
@@ -90,6 +111,10 @@ class BaseModel
         $this->data[$name] = $value;
     }
 
+    /**
+     * Get an item on the data array, or hand off to a get_ function if available
+     * @param string $name
+     */
     public function __get($name)
     {
         // Defer to the get method if it exists...

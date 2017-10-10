@@ -8,84 +8,20 @@ use Meiosis\Exceptions\ObjectNotFoundException;
 use Meiosis\Exceptions\ObjectNotPopulatedException;
 use Meiosis\Models\Page;
 
+/**
+ * Class for working with the /cms/site/{siteid}/page endpoint
+ */
 class CMSPage extends CRMObject implements CRMObjectInterface
 {
-    private $endpoint = 'cms/site/';
-    private $siteToken = '';
-
-    public function find($identifier)
-    {
-        $page = $this->apiClient->get(
-            $this->endpoint . $identifier,
-            $this->payload()
-        );
-
-        return new Page($page);
-    }
-
-    public function save($page)
-    {
-        if (is_null($page->id)) {
-            $result = $this->create($page);
-        }
-
-        if (!is_null($page->id)) {
-            $result = $this->update($page);
-        }
-
-        return $this->find($result->id);
-    }
+    protected $endpoint = 'cms/site/';
+    protected $siteToken = '';
+    protected static $returnType = Page::class;
 
     /**
-     * Creates a site if it doesn't
-     * @param Site $site
-     * @return
+     * Fetch the page hierarchy for a given page, or the site as a whole
+     * @param string|bool $pageID
+     * @return array of Page Objects
      */
-    protected function create($page)
-    {
-        return $this
-            ->apiClient
-            ->post($this->endpoint, $this->payload($page->extract()));
-    }
-
-    /**
-     * Updates an existing site
-     * @param Site $site
-     * @return type
-     */
-    protected function update($page)
-    {
-        $updateEndpoint = $this->endpoint . $page->id;
-        return $this
-            ->apiClient
-            ->post($updateEndpoint, $this->payload($page->extract()));
-    }
-
-    public function blueprint()
-    {
-        return new Page([], $this);
-    }
-
-    /**
-     * Deletes an Existing Page
-     * @param Page|String $identifier
-     * @return type
-     */
-    public function delete($identifier)
-    {
-        if ($identifier instanceof Page) {
-            $deleteEndpoint = $this->endpoint . $identifier->id;
-        }
-
-        if (gettype($identifier) == 'string') {
-            $deleteEndpoint = $this->endpoint . $identifier;
-        }
-
-        return $this
-            ->apiClient
-            ->delete($deleteEndpoint, $this->payload());
-    }
-
     public function getHierarchy($pageID = false)
     {
         $endpoint = "cms/hierarchy/{$this->siteToken}";
@@ -94,10 +30,7 @@ class CMSPage extends CRMObject implements CRMObjectInterface
         }
         $result = null;
 
-        $result = $this->apiClient->get(
-            $endpoint,
-            $this->payload()
-        );
+        $result = $this->apiClient->get($endpoint, $this->payload());
 
         $data = [];
         foreach ($result as $page) {
@@ -107,6 +40,11 @@ class CMSPage extends CRMObject implements CRMObjectInterface
         return $data;
     }
 
+    /**
+     * Perform a page search based on a slug / url string
+     * @param string $slug
+     * @return array of Page objects
+     */
     public function bySlug($slug)
     {
         $result = $this->apiClient->get(
@@ -125,23 +63,10 @@ class CMSPage extends CRMObject implements CRMObjectInterface
     }
 
     /**
-     * Search By Attribute
+     * Set the site that should be used
+     * @param string $token
+     * @return CRMPage
      */
-    public function byAttributes($attributes)
-    {
-        $result = $this->apiClient->get(
-            $this->endpoint,
-            $this->payload($attributes)
-        );
-
-        $data = [];
-        foreach ($result as $page) {
-            $data[] = new Page($page);
-        }
-
-        return $data;
-    }
-
     public function setSiteToken($token)
     {
         $this->siteToken = $token;

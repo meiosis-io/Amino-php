@@ -18,6 +18,10 @@ class Transaction extends BaseModel
         'tax'           => 0, // Tax Percentage (As decimal)
     ];
 
+    /**
+     * Set the customer ID
+     * @param Customer|string $customer
+     */
     public function set_customer($customer)
     {
         if ($customer instanceof Customer) {
@@ -53,6 +57,9 @@ class Transaction extends BaseModel
         $this->updateTotal();
     }
 
+    /**
+     * Re calculate the total
+     */
     private function updateTotal()
     {
         $total = 0;
@@ -72,7 +79,9 @@ class Transaction extends BaseModel
         $this->data['items'] = [];
     }
 
-    // Provide back the transaction items
+    /**
+     * Return an array of TransactionItem Objects
+     */
     public function get_items()
     {
         $items = [];

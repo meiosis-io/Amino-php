@@ -1,6 +1,8 @@
 <?php
 namespace Meiosis\Endpoints;
 
+use Meiosis\Models\BaseModel;
+
 interface CRMObjectInterface
 {
     /**
@@ -9,6 +11,13 @@ interface CRMObjectInterface
      * @return type
      */
     public function find($identifier);
+
+    /**
+     * Given an array of key:value pairs, perform a search
+     * @param array $searchArray
+     * @return BaseModel
+     */
+    public function search($searchArray);
 
     /**
      * Retun an empty instance of the appropriate Model

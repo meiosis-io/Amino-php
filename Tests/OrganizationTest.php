@@ -33,31 +33,29 @@ class OrganizationTest extends TestCase
 
         $this->assertNotNull($organization->id);
 
-        return $orgData = [
-            'id'    => $organization->id,
-            'name' => $organization->name
-        ];
+        return $organization;
     }
 
 
     /**
      * @depends testOrganizationCreation
      */
-    public function testOrganizationSearch(array $orgData)
+    public function testOrganizationSearch($organization)
     {
-        $organization = self::$amino->organizations()->find($orgData['id']);
-        $this->assertEquals($organization->name, $orgData['name']);
+        $organization = self::$amino->organizations()->find($organization->id);
+        $this->assertEquals($organization->name, $organization->name);
 
-        return $orgData;
+        $foundOrgs = self::$amino->organizations()->search(['name' => 'PhpUnit Intl']);
+        $this->assertEquals($foundOrgs[0]->id, $organization->id);
+
+        return $organization;
     }
 
     /**
      * @depends testOrganizationCreation
      */
-    public function testOrganizationUpdate(array $orgData)
+    public function testOrganizationUpdate($organization)
     {
-        $organization = self::$amino->organizations()->find($orgData['id']);
-
         $newName = "PHPUNIT INTERNATIONAL UNLIMITED COMPANY";
         $organization->name = $newName;
         $organization->save();
@@ -68,20 +66,20 @@ class OrganizationTest extends TestCase
     /**
      * @depends testOrganizationSearch
      */
-    public function testOrganizationDelete(array $orgData)
+    public function testOrganizationDelete($organization)
     {
-        $result = self::$amino->organizations()->delete($orgData['id']);
+        $result = self::$amino->organizations()->delete($organization->id);
         $this->assertObjectHasAttribute('success', $result);
 
-        return $orgData;
+        return $organization;
     }
 
     /**
      * @depends testOrganizationDelete
      */
-    public function testFailedOrganizationSearch(array $orgData)
+    public function testFailedOrganizationSearch($organization)
     {
         $this->expectException(ObjectNotFoundException::class);
-        self::$amino->organizations()->find($orgData['id']);
+        self::$amino->organizations()->find($organization->id);
     }
 }

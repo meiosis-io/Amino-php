@@ -11,6 +11,10 @@ class PageType extends BaseModel
         'name' => null
     ];
 
+    /**
+     * Set the site ID for the object
+     * @param Site $site
+     */
     public function setSite($site)
     {
         if ($site instanceof Site) {

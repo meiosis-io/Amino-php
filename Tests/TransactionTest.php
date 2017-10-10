@@ -5,6 +5,7 @@ use Dotenv\Dotenv;
 use Meiosis\Amino;
 use Meiosis\Exceptions\InvalidEndpointException;
 use Meiosis\Exceptions\ObjectNotFoundException;
+use Meiosis\Exceptions\UseOtherMethodException;
 use Meiosis\Models\TransactionItem;
 use PHPUnit\Framework\TestCase;
 
@@ -36,9 +37,10 @@ class TransactionTest extends TestCase
         self::$customer = $customer;
     }
 
-    public static function tearDownAfterClass()
+    public function testSearchNotImplemented()
     {
-        // self::$amino->customers()->delete(self::$customer->id);
+        $this->expectException(InvalidEndpointException::class);
+        self::$amino->transactions()->search([]);
     }
 
     public function testTransactionCreation()
@@ -61,6 +63,9 @@ class TransactionTest extends TestCase
 
         $this->assertNotNull($transaction->id);
 
+        // Ensure that items are of the proper type
+        $this->assertTrue($transaction->items[0] instanceof TransactionItem);
+
         return $transaction;
     }
 
@@ -70,7 +75,7 @@ class TransactionTest extends TestCase
     public function testTransactionSearch($transaction)
     {
         // This should fail, as transactions can only be created, never updated.
-        $this->expectException(InvalidEndpointException::class);
+        $this->expectException(UseOtherMethodException::class);
         // Update the transaction
         $transaction->save();
     }

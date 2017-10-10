@@ -7,83 +7,24 @@ use Meiosis\Endpoints\CRMObjectInterface;
 use Meiosis\Exceptions\InvalidEndpointException;
 use Meiosis\Exceptions\ObjectNotFoundException;
 use Meiosis\Exceptions\ObjectNotPopulatedException;
+use Meiosis\Exceptions\UseOtherMethodException;
 use Meiosis\Models\Transaction;
 
+/**
+ * Class for working with the /transactions endpoint
+ */
 class CRMTransaction extends CRMObject implements CRMObjectInterface
 {
-    private $endpoint = 'transactions/';
+    protected $endpoint = 'transactions/';
+    protected static $returnType = Transaction::class;
 
     /**
-     * Given an identifier for our object, find and return exactly one
-     * @param string $identifier
-     * @return type
-     */
-    public function find($identifier)
-    {
-        $result = $this->apiClient->get(
-            $this->endpoint . $identifier,
-            $this->payload()
-        );
-
-        return new Transaction($result, $this);
-    }
-
-    /**
-     * Search
-     * @return type
+     * Search Method - Not Available for transactions, so it will throw an exception
+     * @param array $searchArray
      */
     public function search($searchArray)
     {
-        $result = $this->apiClient->get(
-            $this->endpoint,
-            $this->payload($searchArray)
-        );
-
-        $data = [];
-        foreach ($result as $transaction) {
-            $data[] = new Transaction($transaction, $this);
-        }
-
-        return $data;
-    }
-
-    /**
-     * Returns a new, empty instance for populating
-     * @return Customer
-     */
-    public function blueprint()
-    {
-        return new Transaction([], $this);
-    }
-
-    /**
-     * Store a Transaction
-     * @param Transaction $transaction
-     * @return type
-     */
-    public function save($transaction)
-    {
-        if (is_null($transaction->id)) {
-            $result = $this->create($transaction);
-        }
-
-        if (!is_null($transaction->id)) {
-            $result = $this->update($transaction);
-        }
-
-        return $this->find($result->id);
-    }
-
-    /**
-     * Creates a Transaction if it doesn't exist.
-     * @param Transaction $transaction
-     * @return
-     */
-    protected function create($transaction)
-    {
-        return $this
-            ->apiClient
-            ->post($this->endpoint, $this->payload($transaction->extract()));
+        throw new InvalidEndpointException('Search not available for transactions');
     }
 
     /**
@@ -93,26 +34,6 @@ class CRMTransaction extends CRMObject implements CRMObjectInterface
      */
     protected function update($transaction)
     {
-        throw new InvalidEndpointException('Existing transactions can not be updated. You should destroy and re-issue the transaction.');
-    }
-
-    /**
-     * Deletes an Existing Transaction
-     * @param Transaction|String $identifier
-     * @return type
-     */
-    public function delete($identifier)
-    {
-        if ($identifier instanceof Transaction) {
-            $deleteEndpoint = $this->endpoint . $identifier->id;
-        }
-
-        if (gettype($identifier) == 'string') {
-            $deleteEndpoint = $this->endpoint . $identifier;
-        }
-
-        return $this
-            ->apiClient
-            ->delete($deleteEndpoint, $this->payload());
+        throw new UseOtherMethodException('Existing transactions can not be updated. You should destroy and re-issue the transaction.');
     }
 }
