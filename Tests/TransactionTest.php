@@ -36,9 +36,10 @@ class TransactionTest extends TestCase
         self::$customer = $customer;
     }
 
-    public static function tearDownAfterClass()
+    public function testSearchNotImplemented()
     {
-        // self::$amino->customers()->delete(self::$customer->id);
+        $this->expectException(InvalidEndpointException::class);
+        self::$amino->transactions()->search([]);
     }
 
     public function testTransactionCreation()
@@ -60,6 +61,9 @@ class TransactionTest extends TestCase
         $transaction->save();
 
         $this->assertNotNull($transaction->id);
+
+        // Ensure that items are of the proper type
+        $this->assertTrue($transaction->items[0] instanceof TransactionItem);
 
         return $transaction;
     }

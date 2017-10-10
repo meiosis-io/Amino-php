@@ -1,6 +1,8 @@
 <?php
 namespace Meiosis\Endpoints;
 
+use Meiosis\Models\BaseModel;
+
 interface CRMObjectInterface
 {
     /**

@@ -35,19 +35,60 @@ abstract class CRMObject
     }
 
     /**
+     * Given an object, save it
+     * @param BaseModel $object
+     * @return type
+     */
+    public function save($object)
+    {
+        if (is_null($object->id)) {
+            $result = $this->create($object);
+        }
+
+        if (!is_null($object->id)) {
+            $result = $this->update($object);
+        }
+
+        return $this->find($result->id);
+    }
+
+    /**
+     * Create a new BaseModel
+     * @param BaseModel $object
+     * @return
+     */
+    protected function create($object)
+    {
+        return $this
+            ->apiClient
+            ->post($this->endpoint, $this->payload($object->extract()));
+    }
+
+    /**
+     * Updates an existing BaseModel
+     * @param BaseModel $object
+     * @return type
+     */
+    protected function update($object)
+    {
+        $updateEndpoint = $this->endpoint . $object->id;
+        return $this
+            ->apiClient
+            ->post($updateEndpoint, $this->payload($object->extract()));
+    }
+
+    /**
      * Deletes an Existing Object
      * @param Object|String $identifier
      * @return type
      */
     public function delete($identifier)
     {
-        $type = gettype($identifier);
-
         if (gettype($identifier) == 'string') {
             $deleteEndpoint = $this->endpoint . $identifier;
         }
 
-        if ($identif instanceof BaseModel) {
+        if ($identifier instanceof BaseModel) {
             $deleteEndpoint = $this->endpoint . $identifier->id;
         }
 

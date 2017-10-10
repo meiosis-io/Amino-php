@@ -47,6 +47,10 @@ class ApiClient
     {
         $status = $response->getStatusCode();
 
+        if ($status == 200) {
+            return json_decode($response->getBody());
+        }
+
         if ($status == 404) {
             throw new ObjectNotFoundException;
         }
@@ -55,10 +59,6 @@ class ApiClient
             throw new ObjectValidationFailedException($response->getBody());
         }
 
-        if ($status != 200) {
-            throw new UnknownApiException('Returned Status: ' . $status);
-        }
-
-        return json_decode($response->getBody());
+        throw new UnknownApiException('Returned Status: ' . $status);
     }
 }

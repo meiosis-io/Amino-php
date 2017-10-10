@@ -10,7 +10,7 @@ use Meiosis\Models\Customer;
 
 class CRMCustomer extends CRMObject implements CRMObjectInterface
 {
-    private $endpoint = 'customers/';
+    protected $endpoint = 'customers/';
 
     /**
      * Given an identifier for our object, find and return exactly one
@@ -104,26 +104,6 @@ class CRMCustomer extends CRMObject implements CRMObjectInterface
         return $this
             ->apiClient
             ->post($updateEndpoint, $this->payload($customer->extract()));
-    }
-
-    /**
-     * Deletes an Existing Customer
-     * @param Customer|String $identifier
-     * @return type
-     */
-    public function delete($identifier)
-    {
-        if ($identifier instanceof Customer) {
-            $deleteEndpoint = $this->endpoint . $identifier->id;
-        }
-
-        if (gettype($identifier) == 'string') {
-            $deleteEndpoint = $this->endpoint . $identifier;
-        }
-
-        return $this
-            ->apiClient
-            ->delete($deleteEndpoint, $this->payload());
     }
 
     public function trackInteraction(Customer $customer, $source, $description, $priority = 5)

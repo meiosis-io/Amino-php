@@ -9,9 +9,7 @@ use Meiosis\Endpoints\CMSPageAttribute;
 use Meiosis\Endpoints\CRMCustomer;
 use Meiosis\Endpoints\CRMOrganization;
 use Meiosis\Endpoints\CRMTransaction;
-// use Meiosis\Endpoints\Customer;
-// use Meiosis\Endpoints\Organization;
-// use Meiosis\Endpoints\Transaction;
+use Meiosis\ApiClient\ApiClient;
 use Meiosis\Exceptions\InvalidEndpointException;
 use Meiosis\Exceptions\ObjectNotPopulatedException;
 
@@ -95,54 +93,16 @@ class Amino
         return new CMSPageAttribute($this->apikey, $this->teamID, $this->api_url, $pageType);
     }
 
-    // public function customer($identifier)
-    // {
-    //     $customer = new Customer($this->apikey, $this->teamID, $this->api_url);
-    //     return $customer->find($identifier);
-    // }
-
-    // public function createCustomer($fields)
-    // {
-    //     $customer = new Customer($this->apikey, $this->teamID, $this->api_url);
-    //     return $customer->create($fields);
-    // }
-
-    // public function organization($identifier)
-    // {
-    //     $organization = new Organization($this->apikey, $this->teamID, $this->api_url);
-    //     return $organization->find($identifier);
-    // }
-
-    // public function searchOrganizations($data)
-    // {
-    //     $organization = new Organization($this->apikey, $this->teamID, $this->api_url);
-    //     return $organization->search($data);
-    // }
-
-    // public function createOrganization($fields)
-    // {
-    //     $organization = new Organization($this->apikey, $this->teamID, $this->api_url);
-    //     return $organization->create($fields);
-    // }
-
-    // public function recordTransaction(Customer $customer, array $transactionData)
-    // {
-    //     $transaction = new Transaction($this->apikey, $this->teamID, $this->api_url);
-    //     if (! $customer->exists()) {
-    //         throw new ObjectNotPopulatedException;
-    //     }
-
-    //     $data = [
-    //         'customer' => $customer,
-    //         'details'  => $transactionData
-    //     ];
-
-    //     return $transaction->create($data);
-    // }
-
-    // public function transaction($transactionId)
-    // {
-    //     $transaction = new Transaction($this->apikey, $this->teamID, $this->api_url);
-    //     return $transaction->find($transactionId);
-    // }
+    /**
+     * Function for testing connectivity. Will ping configured base URL to ensure it's up.
+     * This doesn't have much of a purpose outside of development to ensure your system
+     * can talk to the api.
+     * @return bool Connection Status
+     */
+    public function remoteTest()
+    {
+        $client = new ApiClient($this->api_url);
+        $response = $client->get('', []);
+        return (bool) $response;
+    }
 }

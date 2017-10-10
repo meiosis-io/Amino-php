@@ -11,7 +11,7 @@ use Meiosis\Models\Transaction;
 
 class CRMTransaction extends CRMObject implements CRMObjectInterface
 {
-    private $endpoint = 'transactions/';
+    protected $endpoint = 'transactions/';
 
     /**
      * Given an identifier for our object, find and return exactly one
@@ -34,17 +34,7 @@ class CRMTransaction extends CRMObject implements CRMObjectInterface
      */
     public function search($searchArray)
     {
-        $result = $this->apiClient->get(
-            $this->endpoint,
-            $this->payload($searchArray)
-        );
-
-        $data = [];
-        foreach ($result as $transaction) {
-            $data[] = new Transaction($transaction, $this);
-        }
-
-        return $data;
+        throw new InvalidEndpointException('Search not available for transactions');
     }
 
     /**
@@ -94,25 +84,5 @@ class CRMTransaction extends CRMObject implements CRMObjectInterface
     protected function update($transaction)
     {
         throw new InvalidEndpointException('Existing transactions can not be updated. You should destroy and re-issue the transaction.');
-    }
-
-    /**
-     * Deletes an Existing Transaction
-     * @param Transaction|String $identifier
-     * @return type
-     */
-    public function delete($identifier)
-    {
-        if ($identifier instanceof Transaction) {
-            $deleteEndpoint = $this->endpoint . $identifier->id;
-        }
-
-        if (gettype($identifier) == 'string') {
-            $deleteEndpoint = $this->endpoint . $identifier;
-        }
-
-        return $this
-            ->apiClient
-            ->delete($deleteEndpoint, $this->payload());
     }
 }

@@ -10,7 +10,7 @@ use Meiosis\Models\Organization;
 
 class CRMOrganization extends CRMObject implements CRMObjectInterface
 {
-    private $endpoint = 'organizations/';
+    protected $endpoint = 'organizations/';
 
     /**
      * Given an identifier for our object, find and return exactly one
@@ -104,25 +104,5 @@ class CRMOrganization extends CRMObject implements CRMObjectInterface
         return $this
             ->apiClient
             ->post($updateEndpoint, $this->payload($organization->extract()));
-    }
-
-    /**
-     * Deletes an Existing organization
-     * @param Customer|String $identifier
-     * @return type
-     */
-    public function delete($identifier)
-    {
-        if ($identifier instanceof Organization) {
-            $deleteEndpoint = $this->endpoint . $identifier->id;
-        }
-
-        if (gettype($identifier) == 'string') {
-            $deleteEndpoint = $this->endpoint . $identifier;
-        }
-
-        return $this
-            ->apiClient
-            ->delete($deleteEndpoint, $this->payload());
     }
 }

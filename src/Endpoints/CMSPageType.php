@@ -10,8 +10,8 @@ use Meiosis\Models\PageType;
 
 class CMSPageType extends CRMObject implements CRMObjectInterface
 {
-    private $endpoint = 'cms/page-type/';
-    private $siteToken = '';
+    protected $endpoint = 'cms/page-type/';
+    protected $siteToken = '';
 
     public function find($identifier)
     {
@@ -69,26 +69,6 @@ class CMSPageType extends CRMObject implements CRMObjectInterface
     public function blueprint()
     {
         return new PageType([], $this);
-    }
-
-    /**
-     * Deletes an Existing Page
-     * @param Page|String $identifier
-     * @return type
-     */
-    public function delete($identifier)
-    {
-        if ($identifier instanceof PageType) {
-            $deleteEndpoint = $this->endpoint . $identifier->id;
-        }
-
-        if (gettype($identifier) == 'string') {
-            $deleteEndpoint = $this->endpoint . $identifier;
-        }
-
-        return $this
-            ->apiClient
-            ->delete($deleteEndpoint, $this->payload());
     }
 
     public function setSiteToken($token)

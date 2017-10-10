@@ -9,7 +9,7 @@ use Meiosis\Models\PageAttribute;
 
 class CMSPageAttribute extends CRMObject implements CRMObjectInterface
 {
-    private $endpoint = 'cms/page-attributes/';
+    protected $endpoint = 'cms/page-attributes/';
     protected $data = null;
     protected $pageType = null;
     public $attributes = [];
@@ -106,12 +106,5 @@ class CMSPageAttribute extends CRMObject implements CRMObjectInterface
         return $this
             ->apiClient
             ->post($updateEndpoint, $this->payload($attribute->extract()));
-    }
-
-    public function delete($identifier)
-    {
-        return $this
-            ->apiClient
-            ->delete($this->endpoint . $identifier, $this->payload());
     }
 }
