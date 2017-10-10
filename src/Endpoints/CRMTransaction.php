@@ -7,6 +7,7 @@ use Meiosis\Endpoints\CRMObjectInterface;
 use Meiosis\Exceptions\InvalidEndpointException;
 use Meiosis\Exceptions\ObjectNotFoundException;
 use Meiosis\Exceptions\ObjectNotPopulatedException;
+use Meiosis\Exceptions\UseOtherMethodException;
 use Meiosis\Models\Transaction;
 
 /**
@@ -33,6 +34,6 @@ class CRMTransaction extends CRMObject implements CRMObjectInterface
      */
     protected function update($transaction)
     {
-        throw new InvalidEndpointException('Existing transactions can not be updated. You should destroy and re-issue the transaction.');
+        throw new UseOtherMethodException('Existing transactions can not be updated. You should destroy and re-issue the transaction.');
     }
 }
