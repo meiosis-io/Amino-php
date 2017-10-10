@@ -30,6 +30,10 @@ class Amino
      */
     private $teamID;
 
+    /**
+     * Api Base URL
+     * @var string
+     */
     private $api_url;
 
     /**
@@ -56,26 +60,47 @@ class Amino
         return $this;
     }
 
+    /**
+     * Fetch a CRMObject to work with customer data
+     * @return CRMCustomer
+     */
     public function customers()
     {
         return new CRMCustomer($this->apikey, $this->teamID, $this->api_url);
     }
 
+    /**
+     * Fetch a CRMObject to work with organization data
+     * @return CRMOrganization
+     */
     public function organizations()
     {
         return new CRMOrganization($this->apikey, $this->teamID, $this->api_url);
     }
 
+    /**
+     * Fetch a CRMObject to work with transactions data
+     * @return CRMTransaction
+     */
     public function transactions()
     {
         return new CRMTransaction($this->apikey, $this->teamID, $this->api_url);
     }
 
+    /**
+     * Fetch a CRMObject to work with Site data
+     * @return CMSSite
+     */
     public function sites()
     {
         return new CMSSite($this->apikey, $this->teamID, $this->api_url);
     }
 
+    /**
+     * Fetch a CRMObject to work with CMS Page data
+     * @param string $siteToken
+     * @return CMSPage
+     */
     public function pages($siteToken)
     {
         $page = new CMSPage($this->apikey, $this->teamID, $this->api_url);
@@ -83,11 +108,20 @@ class Amino
         return $page;
     }
 
+    /**
+     * Fetch a CRMObject to work with CMS Page Types
+     * @return CMSPageType
+     */
     public function pageTypes()
     {
         return new CMSPageType($this->apikey, $this->teamID, $this->api_url);
     }
 
+    /**
+     * Fetch a CRMObject to work with CMS Page Attributes
+     * @param string $pageType - Page Type ID
+     * @return CMSPageAttribute
+     */
     public function pageAttributes($pageType)
     {
         return new CMSPageAttribute($this->apikey, $this->teamID, $this->api_url, $pageType);
