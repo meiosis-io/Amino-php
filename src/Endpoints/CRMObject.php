@@ -12,6 +12,8 @@ abstract class CRMObject
     protected $apiClient;
     protected $apiUrl;
 
+    protected static $returnType = BaseModel::class;
+
     // Instantiate the object with the API credentials, and build the client
     public function __construct($apikey, $teamID, $api_url)
     {
@@ -19,6 +21,50 @@ abstract class CRMObject
         $this->teamID = urlencode($teamID);
         $this->apiUrl = $api_url;
         $this->apiClient = new ApiClient($this->apiUrl);
+    }
+
+    /**
+     * Given an ID, return the object
+     * @param string $identifier
+     * @return BaseModel
+     */
+    public function find($identifier)
+    {
+        $result = $this->apiClient->get(
+            $this->endpoint . $identifier,
+            $this->payload()
+        );
+
+        return new static::$returnType($result, $this);
+    }
+
+    /**
+     * Generate an empty object that implements BaseModel for populating
+     * @return BaseModel
+     */
+    public function blueprint()
+    {
+        return new static::$returnType([], $this);
+    }
+
+    /**
+     * Given an array of key:value pairs, perform a search
+     * @param array $searchArray
+     * @return BaseModel
+     */
+    public function search($searchArray)
+    {
+        $result = $this->apiClient->get(
+            $this->endpoint,
+            $this->payload($searchArray)
+        );
+
+        $data = [];
+        foreach ($result as $item) {
+            $data[] = new static::$returnType($item, $this);
+        }
+
+        return $data;
     }
 
     /**

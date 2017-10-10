@@ -8,25 +8,15 @@ use Meiosis\Exceptions\ObjectNotFoundException;
 use Meiosis\Exceptions\ObjectNotPopulatedException;
 use Meiosis\Models\Page;
 
+/**
+ * Class for working with the /cms/site/{siteid}/page endpoint
+ */
 class CMSPage extends CRMObject implements CRMObjectInterface
 {
     protected $endpoint = 'cms/site/';
     protected $siteToken = '';
 
-    public function find($identifier)
-    {
-        $page = $this->apiClient->get(
-            $this->endpoint . $identifier,
-            $this->payload()
-        );
-
-        return new Page($page);
-    }
-
-    public function blueprint()
-    {
-        return new Page([], $this);
-    }
+    protected static $returnType = Page::class;
 
     public function getHierarchy($pageID = false)
     {

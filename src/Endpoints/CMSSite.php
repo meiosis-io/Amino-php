@@ -12,19 +12,7 @@ class CMSSite extends CRMObject implements CRMObjectInterface
 {
     protected $endpoint = 'cms/site/';
 
-    /**
-     * Given an identifier for our object, find and return exactly one
-     * @param string $identifier
-     * @return type
-     */
-    public function find($identifier)
-    {
-        $site = $this->apiClient->get(
-            $this->endpoint . $identifier,
-            $this->payload()
-        );
-        return new Site($site);
-    }
+    protected static $returnType = Site::class;
 
     /**
      * Save method - Overwrite base since we use token instead of ID
@@ -40,14 +28,5 @@ class CMSSite extends CRMObject implements CRMObjectInterface
 
         $result = $this->update($object);
         return $this->find($result->token);
-    }
-
-    /**
-     * Retun an empty instance of the appropriate Model
-     * @return type
-     */
-    public function blueprint()
-    {
-        return new Site([], $this);
     }
 }

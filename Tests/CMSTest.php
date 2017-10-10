@@ -105,11 +105,11 @@ class CMSTest extends TestCase
         $this->assertEquals($crmObject->all()[0]->name, $attribute->name);
 
         // Null Search
-        $attrSearch = $crmObject->search('name', 'Banana Splits');
+        $attrSearch = $crmObject->search(['name' => 'Banana Splits']);
         $this->assertNull($attrSearch);
 
         // Good search
-        $attrSearch = $crmObject->search('name', 'Test Attribute');
+        $attrSearch = $crmObject->search(['name' => 'Test Attribute']);
         $this->assertEquals($attrSearch->name, $attribute->name);
 
         // Not Found

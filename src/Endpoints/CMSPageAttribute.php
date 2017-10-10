@@ -14,6 +14,8 @@ class CMSPageAttribute extends CRMObject implements CRMObjectInterface
     protected $pageType = null;
     public $attributes = [];
 
+    protected static $returnType = PageAttribute::class;
+
     public function __construct($apikey, $teamID, $api_url, $pageType)
     {
         parent::__construct($apikey, $teamID, $api_url);
@@ -27,12 +29,12 @@ class CMSPageAttribute extends CRMObject implements CRMObjectInterface
      * @param value $value
      * @return PageAttribute
      */
-    public function search($field, $value)
+    public function search($searchArray)
     {
         $attributes = $this->all();
 
         foreach ($attributes as $attribute) {
-            if ($attribute->{$field} == $value) {
+            if ($this->testAttribute($searchArray, $attribute)) {
                 return $attribute;
             }
         }
@@ -40,9 +42,26 @@ class CMSPageAttribute extends CRMObject implements CRMObjectInterface
         return null;
     }
 
+    /**
+     * Apply the search Array to a given attribute
+     * @param array $searchArray
+     * @param attribute $attribute
+     * @return boolean
+     */
+    private function testAttribute($searchArray, $attribute)
+    {
+        foreach ($searchArray as $field => $value) {
+            if ($attribute->{$field} == $value) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function find($identifier)
     {
-        $found = $this->search('id', $identifier);
+        $found = $this->search(['id' => $identifier]);
         if (is_null($found)) {
             throw new ObjectNotFoundException('Not Found');
         }
@@ -63,48 +82,5 @@ class CMSPageAttribute extends CRMObject implements CRMObjectInterface
         }
 
         return $attributes;
-    }
-
-    public function blueprint()
-    {
-        return new PageAttribute([], $this);
-    }
-
-    public function save($attribute)
-    {
-        if (is_null($attribute->id)) {
-            $result = $this->create($attribute);
-        }
-
-        if (!is_null($attribute->id)) {
-            $result = $this->update($attribute);
-        }
-
-        return $this->find($result->id);
-    }
-
-    /**
-     * Creates an attribute if it doesn't
-     * @param attribute $attribute
-     * @return
-     */
-    protected function create($attribute)
-    {
-        return $this
-            ->apiClient
-            ->post($this->endpoint, $this->payload($attribute->extract()));
-    }
-
-    /**
-     * Updates an existing attribute
-     * @param attribute $attribute
-     * @return type
-     */
-    protected function update($attribute)
-    {
-        $updateEndpoint = $this->endpoint . $attribute->id;
-        return $this
-            ->apiClient
-            ->post($updateEndpoint, $this->payload($attribute->extract()));
     }
 }

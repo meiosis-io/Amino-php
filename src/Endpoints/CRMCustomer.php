@@ -12,40 +12,7 @@ class CRMCustomer extends CRMObject implements CRMObjectInterface
 {
     protected $endpoint = 'customers/';
 
-    /**
-     * Given an identifier for our object, find and return exactly one
-     * @param string $identifier
-     * @return type
-     */
-    public function find($identifier)
-    {
-        $result = $this->apiClient->get(
-            $this->endpoint . $identifier,
-            $this->payload()
-        );
-
-        return new Customer($result, $this);
-    }
-
-    /**
-     * Search
-     * @return type
-     */
-
-    public function search($searchArray)
-    {
-        $result = $this->apiClient->get(
-            $this->endpoint,
-            $this->payload($searchArray)
-        );
-
-        $data = [];
-        foreach ($result as $customer) {
-            $data[] = new Customer($customer, $this);
-        }
-
-        return $data;
-    }
+    protected static $returnType = Customer::class;
 
     /**
      * Returns a new, empty instance for populating
@@ -61,49 +28,6 @@ class CRMCustomer extends CRMObject implements CRMObjectInterface
         }
 
         return new Customer($attributes, $this);
-    }
-
-    /**
-     * Store a customer
-     * @param Customer $customer
-     * @return type
-     */
-    public function save($customer)
-    {
-        if (is_null($customer->id)) {
-            $result = $this->create($customer);
-        }
-
-        if (!is_null($customer->id)) {
-            $result = $this->update($customer);
-        }
-
-        return $this->find($result->id);
-    }
-
-    /**
-     * Creates a customer if they don't exist.
-     * @param Customer $customer
-     * @return
-     */
-    protected function create($customer)
-    {
-        return $this
-            ->apiClient
-            ->post($this->endpoint, $this->payload($customer->extract()));
-    }
-
-    /**
-     * Updates an existing customer
-     * @param Customer $customer
-     * @return type
-     */
-    protected function update($customer)
-    {
-        $updateEndpoint = $this->endpoint . $customer->id;
-        return $this
-            ->apiClient
-            ->post($updateEndpoint, $this->payload($customer->extract()));
     }
 
     public function trackInteraction(Customer $customer, $source, $description, $priority = 5)
