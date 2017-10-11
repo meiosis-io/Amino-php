@@ -163,4 +163,19 @@ abstract class CRMObject
             ->apiClient
             ->delete($deleteEndpoint, $this->payload());
     }
+
+    /**
+     * Allow for proper Serialization and deserialization
+     * @return array
+     */
+    public function __sleep()
+    {
+        return ['token', 'teamID', 'apiUrl'];
+        // $this->apiClient = null;
+    }
+
+    public function __wakeup()
+    {
+        $this->apiClient = new ApiClient($this->apiUrl);
+    }
 }

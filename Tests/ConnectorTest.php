@@ -39,4 +39,20 @@ class ConnectorTest extends TestCase
         $this->expectException(UseOtherMethodException::class);
         $customer->save();
     }
+
+    public function testModelSerialization()
+    {
+        $amino = new Amino(getenv('API_TOKEN'), getenv('API_TEAM'));
+        $amino->setCustomBaseUrl(getenv('API_BASE_URL'));
+        $customer = $amino->customers()->blueprint();
+        $customer->email = 'phpunit-seralize-test@gmail.com';
+
+        $scust = serialize($customer);
+        $dcust = unserialize($scust);
+        $dcust->save();
+
+        $this->assertNotNull($dcust->id);
+        $this->assertEquals($dcust->email, $customer->email);
+        $amino->customers()->delete($dcust);
+    }
 }
