@@ -31,7 +31,7 @@ The `Meiosis\Amino` class methods will all return instances that extend `Meiosis
 $amino = new Meiosis\Amino($token, $team);
 $pages = $amino
     ->pages($siteId)
-    ->byAttributes([
+    ->search([
         'name' => 'Press Release'
     ]);
 ```
