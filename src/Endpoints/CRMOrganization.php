@@ -23,7 +23,7 @@ class CRMOrganization extends CRMObject implements CRMObjectInterface
     public function blueprint()
     {
         $attributes = Organization::getNativefields();
-        $custom = $this->apiClient->get('attributes/organization/', $this->payload());
+        $custom = $this->amino->client()->get('attributes/organization/', $this->payload());
 
         foreach ($custom as $attribute) {
             $attributes[$attribute->key] = null;

@@ -2,6 +2,7 @@
 
 namespace Meiosis\Endpoints;
 
+use Meiosis\Amino;
 use Meiosis\Endpoints\CRMObject;
 use Meiosis\Endpoints\CRMObjectInterface;
 use Meiosis\Exceptions\ObjectNotFoundException;
@@ -17,9 +18,9 @@ class CMSPageAttribute extends CRMObject implements CRMObjectInterface
     protected $pageType = null;
     protected static $returnType = PageAttribute::class;
 
-    public function __construct($apikey, $teamID, $api_url, $pageType)
+    public function __construct(Amino $amino, $pageType)
     {
-        parent::__construct($apikey, $teamID, $api_url);
+        parent::__construct($amino);
         $this->pageType = $pageType;
         $this->endpoint .= $pageType . '/';
     }
@@ -82,7 +83,7 @@ class CMSPageAttribute extends CRMObject implements CRMObjectInterface
     public function all()
     {
         $attributes = [];
-        $response = $this->apiClient->get(
+        $response = $this->amino->client()->get(
             $this->endpoint,
             $this->payload()
         );

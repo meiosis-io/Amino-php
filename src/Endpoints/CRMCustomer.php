@@ -23,7 +23,7 @@ class CRMCustomer extends CRMObject implements CRMObjectInterface
     public function blueprint()
     {
         $attributes = Customer::getNativefields();
-        $custom = $this->apiClient->get('attributes/customer/', $this->payload());
+        $custom = $this->amino->client()->get('attributes/customer/', $this->payload());
 
         foreach ($custom as $attribute) {
             $attributes[$attribute->key] = null;
@@ -55,6 +55,6 @@ class CRMCustomer extends CRMObject implements CRMObjectInterface
             'priority' => $priority
         ]);
 
-        return $this->apiClient->post('track/', $payload);
+        return $this->amino->client()->post('track/', $payload);
     }
 }

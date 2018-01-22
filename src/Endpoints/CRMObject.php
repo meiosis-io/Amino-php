@@ -1,7 +1,7 @@
 <?php
 namespace Meiosis\Endpoints;
 
-use Meiosis\ApiClient\ApiClient;
+use Meiosis\Amino;
 use Meiosis\Constants\Api;
 use Meiosis\Models\BaseModel;
 
@@ -11,24 +11,14 @@ use Meiosis\Models\BaseModel;
 abstract class CRMObject
 {
     /**
-     * @var string
+     * @var Common Data - Appended to all requests
      */
-    protected $token;
+    public $commonData = [];
 
     /**
-     * @var string
+     * @var Amino - the Amino class instance
      */
-    protected $teamID;
-
-    /**
-     * @var string
-     */
-    protected $apiClient;
-
-    /**
-     * @var string
-     */
-    protected $apiUrl;
+    public $amino;
 
     /**
      * @var string - Class Implementation
@@ -36,12 +26,9 @@ abstract class CRMObject
     protected static $returnType = BaseModel::class;
 
     // Instantiate the object with the API credentials, and build the client
-    public function __construct($apikey, $teamID, $api_url)
+    public function __construct(Amino $amino)
     {
-        $this->token  = urlencode($apikey);
-        $this->teamID = urlencode($teamID);
-        $this->apiUrl = $api_url;
-        $this->apiClient = new ApiClient($this->apiUrl);
+        $this->amino = $amino;
     }
 
     /**
@@ -51,7 +38,7 @@ abstract class CRMObject
      */
     public function find($identifier)
     {
-        $result = $this->apiClient->get(
+        $result = $this->amino->client()->get(
             $this->endpoint . $identifier,
             $this->payload()
         );
@@ -75,7 +62,7 @@ abstract class CRMObject
      */
     public function search($searchArray)
     {
-        $result = $this->apiClient->get(
+        $result = $this->amino->client()->get(
             $this->endpoint,
             $this->payload($searchArray)
         );
@@ -95,10 +82,7 @@ abstract class CRMObject
      */
     public function payload(array $data = [])
     {
-        return array_merge([
-            'api_token' => $this->token,
-            'team'      => $this->teamID
-        ], $data);
+        return array_merge($this->commonData, $data);
     }
 
     /**
@@ -127,7 +111,8 @@ abstract class CRMObject
     protected function create($object)
     {
         return $this
-            ->apiClient
+            ->amino
+            ->client()
             ->post($this->endpoint, $this->payload($object->extract()));
     }
 
@@ -140,7 +125,8 @@ abstract class CRMObject
     {
         $updateEndpoint = $this->endpoint . $object->id;
         return $this
-            ->apiClient
+            ->amino
+            ->client()
             ->post($updateEndpoint, $this->payload($object->extract()));
     }
 
@@ -160,7 +146,8 @@ abstract class CRMObject
         }
 
         return $this
-            ->apiClient
+            ->amino
+            ->client()
             ->delete($deleteEndpoint, $this->payload());
     }
 
@@ -170,12 +157,6 @@ abstract class CRMObject
      */
     public function __sleep()
     {
-        return ['token', 'teamID', 'apiUrl'];
-        // $this->apiClient = null;
-    }
-
-    public function __wakeup()
-    {
-        $this->apiClient = new ApiClient($this->apiUrl);
+        return ['amino'];
     }
 }

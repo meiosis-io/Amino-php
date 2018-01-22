@@ -15,26 +15,31 @@ use Meiosis\Exceptions\ObjectNotPopulatedException;
 
 class Amino
 {
-    const VERSION  = "0.2.1"; // SDK Version
+    const VERSION  = "0.3.0"; // SDK Version
     const API_VERSION  = "1"; // API Version
 
     /**
      * Api Key (created from app)
      * @var string
      */
-    private $apikey;
+    private $apiToken;
 
     /**
      * TeamID for interactions
      * @var int
      */
-    private $teamID;
+    private $teamToken;
 
     /**
      * Api Base URL
      * @var string
      */
-    private $api_url;
+    private $apiBase;
+
+    /**
+     * @var The Api Client
+     */
+    private $client;
 
     /**
      * Setup
@@ -42,11 +47,13 @@ class Amino
      * @param string $teamID
      * @return void
      */
-    public function __construct($apikey, $teamID)
+    public function __construct($apiToken, $teamToken)
     {
-        $this->apikey = $apikey;
-        $this->teamID = $teamID;
-        $this->api_url = Api::API_BASEPATH;
+        $this->apiToken = $apiToken;
+        $this->teamToken = $teamToken;
+        $this->apiBase = Api::API_BASEPATH;
+
+        $this->client = new ApiClient($this);
     }
 
     /**
@@ -56,7 +63,11 @@ class Amino
      */
     public function setCustomBaseUrl($url)
     {
-        $this->api_url = $url;
+        $this->apiBase = $url;
+
+        // ReInstance the Api Client
+        $this->client = new ApiClient($this);
+
         return $this;
     }
 
@@ -66,7 +77,7 @@ class Amino
      */
     public function customers()
     {
-        return new CRMCustomer($this->apikey, $this->teamID, $this->api_url);
+        return new CRMCustomer($this);
     }
 
     /**
@@ -75,7 +86,7 @@ class Amino
      */
     public function organizations()
     {
-        return new CRMOrganization($this->apikey, $this->teamID, $this->api_url);
+        return new CRMOrganization($this);
     }
 
     /**
@@ -84,7 +95,7 @@ class Amino
      */
     public function transactions()
     {
-        return new CRMTransaction($this->apikey, $this->teamID, $this->api_url);
+        return new CRMTransaction($this);
     }
 
     /**
@@ -93,7 +104,7 @@ class Amino
      */
     public function sites()
     {
-        return new CMSSite($this->apikey, $this->teamID, $this->api_url);
+        return new CMSSite($this);
     }
 
     /**
@@ -103,7 +114,7 @@ class Amino
      */
     public function pages($siteToken)
     {
-        $page = new CMSPage($this->apikey, $this->teamID, $this->api_url);
+        $page = new CMSPage($this);
         $page->setSiteToken($siteToken);
         return $page;
     }
@@ -114,7 +125,7 @@ class Amino
      */
     public function pageTypes($siteToken)
     {
-        $type = new CMSPageType($this->apikey, $this->teamID, $this->api_url);
+        $type = new CMSPageType($this);
         $type->setSiteToken($siteToken);
         return $type;
     }
@@ -126,7 +137,7 @@ class Amino
      */
     public function pageAttributes($pageType)
     {
-        return new CMSPageAttribute($this->apikey, $this->teamID, $this->api_url, $pageType);
+        return new CMSPageAttribute($this, $pageType);
     }
 
     /**
@@ -137,8 +148,54 @@ class Amino
      */
     public function remoteTest()
     {
-        $client = new ApiClient($this->api_url);
-        $response = $client->get('', []);
+        $response = $this->client()->get('', []);
+
         return (bool) $response;
+    }
+
+    /**
+     * Get the Configured Api Token
+     * @return string
+     */
+    public function getApiToken()
+    {
+        return $this->apiToken;
+    }
+
+    /**
+     * Get the configured team Token
+     * @return string
+     */
+    public function getTeamToken()
+    {
+        return $this->teamToken;
+    }
+
+    /**
+     * Get the configured API Base URL
+     * @return string
+     */
+    public function getApiBase()
+    {
+        return $this->apiBase;
+    }
+
+    /**
+     * Get the API Client
+     * @return ApiClient
+     */
+    public function client()
+    {
+        return $this->client;
+    }
+
+    public function __sleep()
+    {
+        return ['apiToken', 'teamToken', 'apiBase'];
+    }
+
+    public function __wakeup()
+    {
+        $this->client = new ApiClient($this);
     }
 }

@@ -30,7 +30,7 @@ class CMSPage extends CRMObject implements CRMObjectInterface
         }
         $result = null;
 
-        $result = $this->apiClient->get($endpoint, $this->payload());
+        $result = $this->amino->client()->get($endpoint, $this->payload());
 
         $data = [];
         foreach ($result as $page) {
@@ -47,7 +47,7 @@ class CMSPage extends CRMObject implements CRMObjectInterface
      */
     public function bySlug($slug)
     {
-        $result = $this->apiClient->get(
+        $result = $this->amino->client()->get(
             $this->endpoint,
             $this->payload([
                 'slug' => $slug

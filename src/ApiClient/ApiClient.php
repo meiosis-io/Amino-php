@@ -2,11 +2,11 @@
 namespace Meiosis\ApiClient;
 
 use GuzzleHttp\Client;
-use Meiosis\Constants\Api;
 use GuzzleHttp\Exception\ClientException;
-
-use Meiosis\Exceptions\ObjectNotFoundException;
+use Meiosis\Amino;
+use Meiosis\Constants\Api;
 use Meiosis\Exceptions\InvalidEndpointException;
+use Meiosis\Exceptions\ObjectNotFoundException;
 use Meiosis\Exceptions\ObjectValidationFailedException;
 use Meiosis\Exceptions\UnknownApiException;
 
@@ -14,12 +14,20 @@ class ApiClient
 {
 
     private $client;
+    private $amino;
 
-    public function __construct($url)
+    public function __construct(Amino $amino)
     {
+        $this->amino = $amino;
+
         $this->client = new Client([
-            'base_uri' => $url,
-            'http_errors' => false
+            'base_uri' => $this->amino->getApiBase(),
+            'http_errors' => false,
+            'headers' => [
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer ' . $this->amino->getApiToken(),
+                'X-TEAM' => $this->amino->getTeamToken()
+            ]
         ]);
     }
 
@@ -32,6 +40,7 @@ class ApiClient
     public function get($endpoint, $queryParams)
     {
         $result = $this->client->request('GET', $endpoint, ['query' => $queryParams]);
+
         return $this->checkAndReturnResponse($result);
     }
 
