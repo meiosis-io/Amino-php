@@ -15,7 +15,7 @@ use Meiosis\Exceptions\ObjectNotPopulatedException;
 
 class Amino
 {
-    const VERSION  = "0.3.0"; // SDK Version
+    const VERSION  = "0.4.0"; // SDK Version
     const API_VERSION  = "1"; // API Version
 
     /**
@@ -135,9 +135,9 @@ class Amino
      * @param string $pageType - Page Type ID
      * @return CMSPageAttribute
      */
-    public function pageAttributes($pageType)
+    public function pageAttributes($siteToken, $pageType)
     {
-        return new CMSPageAttribute($this, $pageType);
+        return new CMSPageAttribute($this, $siteToken, $pageType);
     }
 
     /**

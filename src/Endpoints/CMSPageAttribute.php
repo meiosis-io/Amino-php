@@ -13,16 +13,19 @@ use Meiosis\Models\PageAttribute;
  */
 class CMSPageAttribute extends CRMObject implements CRMObjectInterface
 {
-    protected $endpoint = 'cms/page-attributes/';
+    protected $endpoint = 'cms/site/{siteToken}/page-type/{pageType}/page-attribute/';
     protected $data = null;
     protected $pageType = null;
+    protected $siteToken = null;
     protected static $returnType = PageAttribute::class;
 
-    public function __construct(Amino $amino, $pageType)
+    public function __construct(Amino $amino, $siteToken, $pageType)
     {
         parent::__construct($amino);
         $this->pageType = $pageType;
-        $this->endpoint .= $pageType . '/';
+        $this->siteToken = $siteToken;
+        $this->endpoint = str_replace('{siteToken}', $this->siteToken, $this->endpoint);
+        $this->endpoint = str_replace('{pageType}', $this->pageType, $this->endpoint);
     }
 
     /**

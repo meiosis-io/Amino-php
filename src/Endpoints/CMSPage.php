@@ -24,7 +24,7 @@ class CMSPage extends CRMObject implements CRMObjectInterface
      */
     public function getHierarchy($pageID = false)
     {
-        $endpoint = "cms/hierarchy/{$this->siteToken}";
+        $endpoint = "cms/site/{$this->siteToken}/hierarchy";
         if ($pageID) {
             $endpoint .= "/{$pageID}";
         }

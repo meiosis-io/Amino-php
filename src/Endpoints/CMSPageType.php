@@ -9,11 +9,11 @@ use Meiosis\Exceptions\ObjectNotPopulatedException;
 use Meiosis\Models\PageType;
 
 /**
- * Class for working with the /cms/page-type endpoint
+ * Class for working with the cms/site/{siteToken}/page-type/ endpoint
  */
 class CMSPageType extends CRMObject implements CRMObjectInterface
 {
-    protected $endpoint = 'cms/page-type/';
+    protected $endpoint = 'cms/site/{siteToken}/page-type/';
     protected $siteToken = '';
     protected static $returnType = PageType::class;
 
@@ -25,7 +25,7 @@ class CMSPageType extends CRMObject implements CRMObjectInterface
     public function setSiteToken($token)
     {
         $this->siteToken = $token;
-        $this->endpoint .= $token . '/';
+        $this->endpoint = str_replace('{siteToken}', $this->siteToken, $this->endpoint);
         return $this;
     }
 }

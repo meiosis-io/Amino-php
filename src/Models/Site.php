@@ -12,5 +12,6 @@ class Site extends BaseModel
         'name'              => null,
         'domains'           => null,
         'description'       => null,
+        'stagingEnabled'    => false
     ];
 }
