@@ -243,8 +243,9 @@ To work with Page Attributes, call the `pageAttributes()` method on the Amino cl
 
 ```php
 $amino = new Meiosis\Amino($token, $team);
+$siteToken = '54321-54321-543-54321';
 $pageType = '12345-12345-123-12345';
-$pageAttributes = $amino->pageAttributes($pageType);
+$pageAttributes = $amino->pageAttributes($siteToken, $pageType);
 ```
 
 ### Additional Methods
