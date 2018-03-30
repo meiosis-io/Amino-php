@@ -182,7 +182,7 @@ Transactions are not searchable. This method will throw a `Meiosis\Exceptions\In
 
 #### `->save()`
 
-While new transactions can be saved, existing transactions can not. Transactions can not be updated once recorded, but can be removed or voided.
+While new transactions can be saved, existing transactions can not. Transactions can not be updated once recorded, but can be voided.
 
 ## Content Management - Sites
 

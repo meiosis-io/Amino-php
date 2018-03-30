@@ -97,22 +97,14 @@ class Transaction extends BaseModel
      */
     public function void()
     {
-        $transaction = $this->extract();
-        $transaction['id'] = null;
-
-        $transaction['total'] = $transaction['total'] * -1;
-        if (is_null($transaction['discount_type'])) {
-            $transaction['discount_type'] = 'none';
+        if (is_null($this->crmObject)) {
+            throw new UseOtherMethodException('Use ->delete() method on CRM Object. Model was not instantiated with CRMObject to reference.');
         }
 
-        foreach ($transaction['items'] as &$item) {
-            $item['quantity'] = $item['quantity'] * -1;
-            $item['description'] = '(--VOID--) ' . $item['description'];
-        }
+        $deleted = $this->crmObject->delete($this);
+        $record = $this->crmObject->find($deleted->id);
+        $this->populate($record->extract(), $this->crmObject);
 
-        $newTransaction = new Transaction($transaction, $this->crmObject);
-        $newTransaction->save();
-
-        $this->populate($newTransaction->extract());
+        return $this;
     }
 }
