@@ -1,6 +1,6 @@
-# Meiosis API - PHP SDK
+# Petri API - PHP SDK
 
-This package will handle integration with the Meiosis API Services
+This package will handle integration with the Petri API Services
 
 - [Installation](#installation)
 - [Common Concepts](#common-concepts)
