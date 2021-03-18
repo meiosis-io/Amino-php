@@ -11,7 +11,7 @@ class CustomerTest extends TestCase
 {
     public static $amino = null;
 
-    public static function setupBeforeClass()
+    public static function setupBeforeClass(): void
     {
         $dotenv = new Dotenv(__DIR__.'/..');
         $dotenv->load();

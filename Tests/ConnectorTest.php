@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class ConnectorTest extends TestCase
 {
-    public static function setupBeforeClass()
+    public static function setupBeforeClass(): void
     {
         $dotenv = new Dotenv(__DIR__.'/..');
         $dotenv->load();
